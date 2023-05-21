@@ -1,11 +1,12 @@
 describe("Ground", () => {
   async function takeScreenshot(address1, address2, no) {
-    const address1Arr = encodeURI(address1);
-    const address2Arr = encodeURI(address2);
+    const address1Arr = encodeURIComponent(address1);
+    const address2Arr = encodeURIComponent(address2);
 
     try {
       await cy.visit(
-        `https://www.google.com.tw/maps/dir/${address1Arr}/${address2Arr}`
+        `https://www.google.com.tw/maps/dir/${address1Arr}/${address2Arr}`,
+	{ failOnStatusCode: false }
       );
       cy.wait(1000);
       cy.screenshot(`/Zhonghua/${no}`, { capture: "fullPage" });
@@ -17,9 +18,11 @@ describe("Ground", () => {
 
   it("run the xlsx file", () => {
     cy.task("readXlsxFile").then(async (fileContents) => {
-      for (let file of fileContents) {
+      for (let i in fileContents) {
+        if(i < 870 || i >= 5000) continue;
+        const file = fileContents[i];
         await takeScreenshot(file.Origin, file.Destination, file.NO);
-        await cy.wait(1000);
+        //await cy.wait(1000);
         await cy.visit(`https://www.google.com.tw/`);
       }
     });
