@@ -76,6 +76,7 @@ const parseSheet = async (sheet: any) => {
 
 export async function GET(request: Request) {
   // read address from xlsx file
+  /*
   const workbook = await read('src/xlsx/ground3_result.xlsx', { type: 'file' });
   const newWorkbook = XLSX.utils.book_new();
   const sheetList = workbook.SheetNames;
@@ -91,4 +92,5 @@ export async function GET(request: Request) {
 
   const response = new Response('DONE!');
   return response;
+  */
 }

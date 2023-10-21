@@ -1,0 +1,9 @@
+.Login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 1381px;
+    height: 963px;
+    background: url(../../public/background.png) #ffffff no-repeat;
+}
