@@ -1,9 +1,47 @@
-.Login {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 1381px;
-    height: 963px;
-    background: url(../../public/background.png) #ffffff no-repeat;
+.container {
+  margin: 0px;
+  padding: 0px;
+  display: flex;
+  position: relative;
+  background-color: #eeeeee;
+  align-items: center;
+  justify-content: center;
+}
+
+.loginView {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 1381px;
+  height: 963px;
+  background: url(../../public/background.png) #ffffff no-repeat;
+}
+
+.loginBlock {
+  position: absolute;
+  left: 900px;
+  width: 560px;
+  height: 250px;
+  padding: 80px 80px 80px 80px;
+}
+.loginBlock p {
+  font-size: 2em;
+  font-weight: bold;
+}
+.loginBlock button {
+  background: url(../../public/google.png) #ffffff no-repeat;
+  width: 278px;
+  height: 43px;
+  cursor: pointer;
+}
+
+.operationView {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 1381px;
+  height: 963px;
+  background-color: blue;
 }

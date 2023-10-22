@@ -1,27 +1,38 @@
+import '../styles/globals.css';
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import styles from '../styles/main.module.css'
 import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 import { useSession, signIn, signOut } from 'next-auth/react';
 import React from 'react';
+import { GoogleLogin } from '@react-oauth/google';
 
 const Main = () => {
   const { data: session, status } = useSession();
-  const view = session ? <OperationView session={session} /> : <LoginView />;
+  const content = session ? <OperationView session={session} /> : <LoginView />;
+  const view = (
+    <div className={styles.container}>{content}</div>
+  )
   return view;
 }
 
 const LoginView = () => {
-  const googleId = process.env.GOOGLE_ID || "";
-  const googleSecret = process.env.GOOGLE_SECRET || "";
-  console.log(googleId);
   const view = (
-    <>
-        Sign in<br />
-        <button onClick={() => signIn()}>Sign in</button>
-    </>
+    <div className={styles.loginView}>
+      <div className={styles.loginBlock}>
+        <GoogleLogin
+          onSuccess={credentialResponse => {
+            console.log(credentialResponse);
+          }}
+          onError={() => {
+            console.log('Login Failed');
+          }}
+        />
+      </div>
+    </div>
   );
 
   return view;
@@ -30,16 +41,23 @@ const LoginView = () => {
 const OperationView = (session) => {
   const session_data = JSON.stringify(session);
   const view = (
-    <>{session_data}</>
+    <div className={styles.operationView}>
+      {session_data}
+    </div>
   );
 
   return view;
 }
 
 const App = ({ Component, pageProps: { session, ...pageProps } }: AppProps) => {
+  const googleId = process.env.GOOGLE_ID || "";
+  const googleSecret = process.env.GOOGLE_SECRET || "";
+
   return (
     <SessionProvider session={session}>
-      <Main />
+      <GoogleOAuthProvider clientId={googleId}>
+        <Main />
+      </GoogleOAuthProvider>
     </SessionProvider>
   );
 }
