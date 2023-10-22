@@ -1,7 +1,8 @@
 .container {
   margin: 0px;
-  padding: 0px;
+  padding: 10px;
   display: flex;
+  min-width: 1381px;
   position: relative;
   background-color: #eeeeee;
   align-items: center;
@@ -16,11 +17,11 @@
   width: 1381px;
   height: 963px;
   background: url(../../public/background.png) #ffffff no-repeat;
+  border-radius: 10px;
 }
 
 .loginBlock {
-  position: absolute;
-  left: 900px;
+  margin-left: 750px;
   width: 560px;
   height: 250px;
   padding: 80px 80px 80px 80px;
@@ -38,10 +39,29 @@
 
 .operationView {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
+  align-items: left;
+  justify-content: flex-start;
   width: 1381px;
   height: 963px;
-  background-color: blue;
+  background: #ffffff;
+  border-radius: 10px;
+}
+.operationView .menuView {
+  width: 250px;
+  height: 100%;
+  border-radius: 10px;
+}
+.operationView .menuView .menuLogo {
+  width: 100%;
+  height: 240px;
+}
+.operationView .menuView .menuBlock {
+  width: 100%;
+}
+.operationView .jobBoard {
+  display: flex;
+  width: 1131px;
+  height: 100%;
+  background: #fcfcfc;
+  border-radius: 0px 10px 10px 0px;
 }

@@ -12,7 +12,7 @@ import { GoogleLogin } from '@react-oauth/google';
 
 const Main = () => {
   const { data: session, status } = useSession();
-  const content = session ? <OperationView session={session} /> : <LoginView />;
+  const content = !session ? <OperationView session={session} /> : <LoginView />;
   const view = (
     <div className={styles.container}>{content}</div>
   )
@@ -42,10 +42,40 @@ const OperationView = (session) => {
   const session_data = JSON.stringify(session);
   const view = (
     <div className={styles.operationView}>
-      {session_data}
+      <MenuView></MenuView>
+      <JobBoard></JobBoard>
     </div>
   );
 
+  return view;
+}
+const MenuView = () => {
+  const view = (
+    <div className={styles.menuView}>
+      <div className={styles.menuLogo}></div>
+      <div className={styles.menuBlock}>
+        <div className={styles.menuItem}>
+          1
+        </div>
+        <div className={styles.menuItem}>
+          2
+        </div>
+        <div className={styles.menuItem}>
+          3
+        </div>
+        <div className={styles.menuItem}>
+          4
+        </div>
+      </div>
+    </div>
+  );
+  return view;
+}
+const JobBoard = () => {
+  const view = (
+    <div className={styles.jobBoard}>
+    </div>
+  );
   return view;
 }
 
