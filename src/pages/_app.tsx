@@ -1,6 +1,7 @@
 import '../styles/globals.css';
 import Head from 'next/head';
 import Image from 'next/image';
+import {useState, Dispatch, SetStateAction} from 'react';
 import {SessionProvider} from 'next-auth/react';
 import type {AppProps} from 'next/app';
 import {GoogleOAuthProvider} from '@react-oauth/google';
@@ -41,9 +42,11 @@ const LoginView = () => {
 
 const OperationView = session => {
   const session_data = JSON.stringify(session);
+  const [menu, setMenu] = useState<'overview' | 'collaborators'>('overview');
+
   const view = (
     <div className="flex items-start justify-start w-full h-720px rounded bg-white">
-      <MenuView />
+      <MenuView menu={menu} setMenu={setMenu} />
       <JobBoard />
     </div>
   );
@@ -51,9 +54,15 @@ const OperationView = session => {
   return view;
 };
 
-const MenuView = () => {
+const MenuView = ({
+  menu,
+  setMenu,
+}: {
+  menu: 'overview' | 'collaborators';
+  setMenu: Dispatch<SetStateAction<'overview' | 'collaborators'>>;
+}) => {
   const view = (
-    <div className="w-250px flex flex-col space-y-20 items-center h-full rounded px-4 py-6 bg-white shadow-xl">
+    <div className="w-250px flex flex-col space-y-10 items-center h-full rounded px-4 py-6 bg-white shadow-xl">
       {/* Info: (20231024 - Julian) Logo */}
       <div>
         <Image src="/tsmc_logo.svg" width={100} height={80} alt="tsmc_logo" />
@@ -78,12 +87,26 @@ const MenuView = () => {
       {/* Info: (20231024 - Julian) Menu Items */}
       <div className="flex flex-col w-full">
         {/* Info: (20231024 - Julian) Overview */}
-        <button className="flex w-full text-white font-bold border border-primaryGreen text-base items-center space-x-2 p-3 bg-primaryGreen">
+        <button
+          onClick={() => setMenu('overview')}
+          className={`flex w-full font-bold border text-base ${
+            menu === 'overview'
+              ? 'text-white border-primaryGreen bg-primaryGreen'
+              : 'text-black2 border-gray2 bg-white'
+          } items-center space-x-2 p-3`}
+        >
           <PiHouseBold size={24} />
           <p>Overview</p>
         </button>
         {/* Info: (20231024 - Julian) Collaborators */}
-        <button className="flex w-full text-black2 border font-bold border-gray2 text-base items-center space-x-2 p-3 bg-white">
+        <button
+          onClick={() => setMenu('collaborators')}
+          className={`flex w-full font-bold border text-base ${
+            menu === 'collaborators'
+              ? 'text-white border-primaryGreen bg-primaryGreen'
+              : 'text-black2 border-gray2 bg-white'
+          } items-center space-x-2 p-3`}
+        >
           <LuUsers size={24} />
           <p>Collaborators</p>
         </button>
@@ -92,6 +115,7 @@ const MenuView = () => {
   );
   return view;
 };
+
 const JobBoard = () => {
   const view = <div className="flex h-full bg-white2"></div>;
   return view;
