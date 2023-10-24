@@ -1,7 +1,8 @@
 import '../styles/globals.css';
 import Head from 'next/head';
 import Image from 'next/image';
-import {useState, Dispatch, SetStateAction} from 'react';
+import DatePicker from '@/components/date_picker/date_picker';
+import {useState, Dispatch, SetStateAction, useCallback} from 'react';
 import {SessionProvider} from 'next-auth/react';
 import type {AppProps} from 'next/app';
 import {GoogleOAuthProvider} from '@react-oauth/google';
@@ -9,6 +10,8 @@ import {useSession, signIn, signOut} from 'next-auth/react';
 import {GoogleLogin} from '@react-oauth/google';
 import {PiHouseBold} from 'react-icons/pi';
 import {LuUsers} from 'react-icons/lu';
+import {FiSearch} from 'react-icons/fi';
+import {BiRightArrowAlt} from 'react-icons/bi';
 
 const Main = () => {
   const {data: session, status} = useSession();
@@ -117,7 +120,83 @@ const MenuView = ({
 };
 
 const JobBoard = () => {
-  const view = <div className="flex h-full bg-white2"></div>;
+  const startDate = Math.floor(new Date().getTime() / 1000);
+  const endDate = startDate + 86400 * 7;
+
+  const [searchText, setSearchText] = useState('');
+  const [dateStart, setDateStart] = useState(startDate);
+  const [dateEnd, setDateEnd] = useState(endDate);
+  const [filteredDate, setFilteredDate] = useState({
+    startTimeStamp: startDate,
+    endTimeStamp: endDate,
+  });
+
+  const searchChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const searchTerm = event.target.value;
+    setSearchText(searchTerm);
+  };
+
+  const dateStartUpdateHandler = useCallback(
+    async (date: number) => {
+      setDateStart(date);
+      setFilteredDate({
+        startTimeStamp: date,
+        endTimeStamp: dateEnd,
+      });
+    },
+    [dateEnd, filteredDate]
+  );
+
+  const dateEndUpdateHandler = useCallback(
+    async (date: number) => {
+      setDateEnd(date);
+      setFilteredDate({
+        startTimeStamp: dateStart,
+        endTimeStamp: date,
+      });
+    },
+    [dateStart, filteredDate]
+  );
+
+  const view = (
+    <div className="flex h-full bg-white2 flex-1 flex-col p-6 space-y-6">
+      {/* Info: (20231024 - Julian) Title */}
+      <h1 className="text-black font-bold text-42px">Projects</h1>
+      {/* Info: (20231024 - Julian) Filter */}
+      <div className="flex items-center space-x-10">
+        {/* Info: (20231024 - Julian) Search Bar */}
+        <div className="flex items-center relative flex-1">
+          <input
+            className="w-300px h-48px py-3 px-4 w-full placeholder:text-gray rounded border border-gray2 shadow-lg"
+            type="search"
+            placeholder="&#xF002;   Search"
+            onChange={searchChangeHandler}
+          />
+          <FiSearch size={24} style={{position: 'absolute', left: '16px'}} />
+        </div>
+        {/* Info: (20231024 - Julian) Date Picker */}
+        <div className="flex items-center space-x-3">
+          <DatePicker date={dateStart} setDate={dateStartUpdateHandler} maxDate={dateEnd} />
+          <BiRightArrowAlt size={24} />
+          <DatePicker date={dateEnd} setDate={dateEndUpdateHandler} minDate={dateStart} />
+        </div>
+      </div>
+      {/* Info: (20231024 - Julian) Tools bar */}
+      <div className="flex items-center">
+        <div className="flex items-center">
+          <button className="border-b border-primaryGreen py-2 pr-4">
+            <p>All</p>
+          </button>
+          <button className="border-b border-primaryGreen py-2 pr-4">
+            <p>Processing</p>
+          </button>
+          <button className="border-b border-primaryGreen py-2">
+            <p>Done</p>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
   return view;
 };
 
