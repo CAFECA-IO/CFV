@@ -1,21 +1,21 @@
-import NextAuth from "next-auth";
-import type { NextApiRequest, NextApiResponse } from "next";
-import GoogleProvider from "next-auth/providers/google";
+import NextAuth from 'next-auth';
+import type {NextApiRequest, NextApiResponse} from 'next';
+import GoogleProvider from 'next-auth/providers/google';
 
 export default async function auth(req: NextApiRequest, res: NextApiResponse) {
-  const googleId = process.env.GOOGLE_ID || "";
-  const googleSecret = process.env.GOOGLE_SECRET || "";
+  const googleId = process.env.GOOGLE_ID || '';
+  const googleSecret = process.env.GOOGLE_SECRET || '';
   const providers = [
     GoogleProvider({
       clientId: googleId,
       clientSecret: googleSecret,
       authorization: {
         params: {
-          prompt: "consent",
-          access_type: "offline",
-          response_type: "code"
-        }
-      }
+          prompt: 'consent',
+          access_type: 'offline',
+          response_type: 'code',
+        },
+      },
     }),
   ];
 
@@ -27,19 +27,19 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     },
     session: {
       // This is the default. The session is saved in a cookie and never persisted anywhere.
-      strategy: "jwt",
+      strategy: 'jwt',
     },
     // Enable debug messages in the console if you are having problems
     debug: true,
 
     pages: {
-      signIn: "/auth/signin",
-      error: "/auth/signin",
-      newUser: "/auth/new-user",
+      signIn: '/auth/signin',
+      error: '/auth/signin',
+      newUser: '/auth/new-user',
     },
 
     callbacks: {
-      async session({ session, token }) {
+      async session({session, token}) {
         // Send properties to the client, like an access_token from a provider.
         session.accessToken = token.accessToken as string;
         session.refreshToken = token.refreshToken as string;
@@ -48,7 +48,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
         session.id = token.id as string;
         return session;
       },
-      async jwt({ token, user, account }) {
+      async jwt({token, user, account}) {
         // Persist the OAuth access_token to the token right after signin
         if (account) {
           token.accessToken = account.access_token;

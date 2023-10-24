@@ -1,14 +1,14 @@
-import XLSX, { read } from 'xlsx';
+import XLSX, {read} from 'xlsx';
 
 // sleep function
 const sleep = async (ms: number) => {
   console.log('sleep: ', ms);
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+  return new Promise(resolve => setTimeout(resolve, ms));
+};
 
 const removeSymbol = (address: string) => {
   return encodeURIComponent(address.replaceAll('#', ''));
-}
+};
 
 const getDistance = async (address1: string, address2: string, retry = 3) => {
   try {
@@ -17,7 +17,7 @@ const getDistance = async (address1: string, address2: string, retry = 3) => {
     const cleanAddress2 = removeSymbol(address2);
     const url = `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${cleanAddress1}&destinations=${cleanAddress2}&key=AIzaSyC3Sn90tnB460mmoRUsAk04rhTeafprVBY`;
     const map = `https://www.google.com.tw/maps/dir/${cleanAddress1}/${cleanAddress2}`;
-    console.log(url)
+    console.log(url);
     // const response = await fetch(url);
     // const data = await response.json();
     // const address1Parsed = data.origin_addresses[0];
@@ -28,7 +28,7 @@ const getDistance = async (address1: string, address2: string, retry = 3) => {
       // address2: address2Parsed,
       // distance: distance
       url,
-      map
+      map,
     };
     return result;
   } catch (error) {
@@ -39,26 +39,26 @@ const getDistance = async (address1: string, address2: string, retry = 3) => {
       return {
         address1: 'Unknown Address',
         address2: 'Unknown Address',
-        distance: '?? km'
+        distance: '?? km',
       };
     } else {
       return getDistance(address1, address2, retryTime);
     }
   }
-}
+};
 
 const parseSheet = async (sheet: any) => {
   const json = XLSX.utils.sheet_to_json(sheet);
   const result: any[] = [];
 
   let count = 0;
-  for(let row of json) {
+  for (let row of json) {
     const values = Object.values(row || {});
     const newRecord: any = row;
     const address1 = values[1] as string;
     const address2 = values[2] as string;
     const distance = await getDistance(address1, address2);
-    
+
     newRecord['Origin'] = distance.address1;
     newRecord['Destination'] = distance.address2;
     newRecord['Distance'] = distance.distance;
@@ -72,7 +72,7 @@ const parseSheet = async (sheet: any) => {
 
   const rsSheet = XLSX.utils.json_to_sheet(result);
   return rsSheet;
-}
+};
 
 export async function GET(request: Request) {
   // read address from xlsx file
