@@ -1,7 +1,8 @@
 import '../styles/globals.css';
 import Head from 'next/head';
 import Image from 'next/image';
-import DatePicker from '@/components/date_picker/date_picker';
+import DatePicker from '../components/date_picker/date_picker';
+import JobItem from '../components/job_item/job_item';
 import {useState, Dispatch, SetStateAction, useCallback} from 'react';
 import {SessionProvider} from 'next-auth/react';
 import type {AppProps} from 'next/app';
@@ -10,8 +11,9 @@ import {useSession, signIn, signOut} from 'next-auth/react';
 import {GoogleLogin} from '@react-oauth/google';
 import {PiHouseBold} from 'react-icons/pi';
 import {LuUsers} from 'react-icons/lu';
-import {FiSearch} from 'react-icons/fi';
-import {BiRightArrowAlt} from 'react-icons/bi';
+import {FiSearch, FiDownload} from 'react-icons/fi';
+import {BiRightArrowAlt, BiSolidPlusCircle} from 'react-icons/bi';
+import {TbTrash} from 'react-icons/tb';
 
 const Main = () => {
   const {data: session, status} = useSession();
@@ -123,6 +125,7 @@ const JobBoard = () => {
   const startDate = Math.floor(new Date().getTime() / 1000);
   const endDate = startDate + 86400 * 7;
 
+  // Info: (20231024 - Julian) Filter State
   const [searchText, setSearchText] = useState('');
   const [dateStart, setDateStart] = useState(startDate);
   const [dateEnd, setDateEnd] = useState(endDate);
@@ -130,6 +133,8 @@ const JobBoard = () => {
     startTimeStamp: startDate,
     endTimeStamp: endDate,
   });
+  // Info: (20231024 - Julian) Job List State
+  const [currentTab, setCurrentTab] = useState<'all' | 'processing' | 'done'>('all');
 
   const searchChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = event.target.value;
@@ -182,18 +187,54 @@ const JobBoard = () => {
         </div>
       </div>
       {/* Info: (20231024 - Julian) Tools bar */}
-      <div className="flex items-center">
-        <div className="flex items-center">
-          <button className="border-b border-primaryGreen py-2 pr-4">
+      <div className="flex items-center justify-between">
+        {/* Info: (20231024 - Julian) Tab */}
+        <div className="flex items-center border-b border-coolGray space-x-4">
+          <button
+            onClick={() => setCurrentTab('all')}
+            className={`border-b py-2 px-3 transition-all duration-200 ease-in-out ${
+              currentTab === 'all' ? 'border-primaryGreen text-primaryGreen' : 'border-transparent'
+            }`}
+          >
             <p>All</p>
           </button>
-          <button className="border-b border-primaryGreen py-2 pr-4">
+          <button
+            onClick={() => setCurrentTab('processing')}
+            className={`border-b py-2 px-3 transition-all duration-200 ease-in-out ${
+              currentTab === 'processing'
+                ? 'border-primaryGreen text-primaryGreen'
+                : 'border-transparent'
+            }`}
+          >
             <p>Processing</p>
           </button>
-          <button className="border-b border-primaryGreen py-2">
+          <button
+            onClick={() => setCurrentTab('done')}
+            className={`border-b py-2 px-3 transition-all duration-200 ease-in-out ${
+              currentTab === 'done' ? 'border-primaryGreen text-primaryGreen' : 'border-transparent'
+            }`}
+          >
             <p>Done</p>
           </button>
         </div>
+        {/* Info: (20231024 - Julian) Buttons */}
+        <div className="flex items-center space-x-4">
+          <button>
+            <FiDownload size={24} />
+          </button>
+          <button>
+            <TbTrash size={24} />
+          </button>
+          <button>
+            <BiSolidPlusCircle color="#57BE6C" size={40} />
+          </button>
+        </div>
+      </div>
+      {/* Info: (20231024 - Julian) Job List */}
+      <div className="flex flex-col w-full">
+        <JobItem />
+        <JobItem />
+        <JobItem />
       </div>
     </div>
   );
