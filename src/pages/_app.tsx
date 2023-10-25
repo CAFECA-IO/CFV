@@ -18,6 +18,12 @@ import {BsArrowDownShort, BsArrowUpShort} from 'react-icons/bs';
 import {TbTrash} from 'react-icons/tb';
 import {ITEMS_PER_PAGE} from '../constants/config';
 
+const dummyUser = {
+  name: 'Jane Doe',
+  email: 'jane.doe@gmail.com',
+  avatar: '/avatar/user_photo_1.jpeg',
+};
+
 const dummyJobList = [
   {
     author: {
@@ -174,7 +180,7 @@ const MenuView = ({
         {/* Info: (20231024 - Julian) Avatar */}
         <div className="rounded-full overflow-hidden relative w-50px h-50px">
           <Image
-            src={'/avatar/user_photo_1.jpeg'}
+            src={dummyUser.avatar}
             fill
             style={{objectFit: 'cover', objectPosition: 'top'}}
             alt="avatar"
@@ -182,8 +188,8 @@ const MenuView = ({
         </div>
         {/* Info: (20231024 - Julian) User Name & Email */}
         <div className="flex flex-col">
-          <h2 className="text-sm text-black">Jane Doe</h2>
-          <p className="text-gray text-xs">jane.doe@gmail.com</p>
+          <h2 className="text-sm text-black">{dummyUser.name}</h2>
+          <p className="text-gray text-xs">{dummyUser.email}</p>
         </div>
       </div>
       {/* Info: (20231024 - Julian) Menu Items */}
