@@ -15,6 +15,7 @@ import {LuUsers} from 'react-icons/lu';
 import {FiSearch, FiDownload} from 'react-icons/fi';
 import {BiRightArrowAlt, BiSolidPlusCircle} from 'react-icons/bi';
 import {BsArrowDownShort, BsArrowUpShort} from 'react-icons/bs';
+import {PiPlantFill} from 'react-icons/pi';
 import {TbTrash} from 'react-icons/tb';
 import {ITEMS_PER_PAGE} from '../constants/config';
 
@@ -140,7 +141,15 @@ const LoginView = () => {
           }}
         />
         <div className="h-px bg-coolGray w-full"></div>
-        <div className="text-sm text-darkBlue">No account yet? Sign Up</div>
+        <div className="flex items-center space-x-1">
+          <PiPlantFill color="red" />
+          <PiPlantFill color="orange" />
+          <PiPlantFill color="gold" />
+          <PiPlantFill color="lime" />
+          <PiPlantFill color="turquoise" />
+          <PiPlantFill color="violet" />
+          <PiPlantFill color="pink" />
+        </div>
       </div>
     </div>
   );
@@ -384,7 +393,7 @@ const JobBoard = ({menu}: {menu: 'overview' | 'collaborators'}) => {
       <div className="flex flex-col w-full flex-1">
         {/* Info: (20231025 - Julian) Job List Header */}
         <div className="flex items-center h-50px border border-primaryGreen bg-primaryGreen text-sm text-white p-2">
-          <div className="w-6">
+          <div className="w-6 opacity-0">
             <input
               type="checkbox"
               className="accent-white"
@@ -427,7 +436,7 @@ const App = ({Component, pageProps: {session, ...pageProps}}: AppProps) => {
   return (
     <>
       <Head>
-        <title>TSMS</title>
+        <title>TSMC</title>
         <link rel="icon" href="/tsms.ico" />
       </Head>
 
