@@ -14,7 +14,12 @@ module.exports = {
         black: '#101010',
         black2: '#21272A',
 
+        darkBlue: '#001D6C',
+
         primaryGreen: '#57BE6C',
+      },
+      backgroundImage: {
+        login: "url('/background.png')",
       },
       spacing: {
         '1/5': '20%',

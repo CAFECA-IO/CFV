@@ -28,7 +28,7 @@ const dummyJobList = [
     fileName: 'File 001',
     uploadTimestamp: 1698272000,
     status: 'done',
-    isChecked: false,
+    checked: false,
   },
   {
     author: {
@@ -39,7 +39,7 @@ const dummyJobList = [
     fileName: 'File 002',
     uploadTimestamp: 1698273198,
     status: 'done',
-    isChecked: false,
+    checked: false,
   },
   {
     author: {
@@ -50,7 +50,7 @@ const dummyJobList = [
     fileName: 'File 003',
     uploadTimestamp: 1698383198,
     status: 'done',
-    isChecked: false,
+    checked: false,
   },
   {
     author: {
@@ -61,7 +61,7 @@ const dummyJobList = [
     fileName: 'File 004',
     uploadTimestamp: 1698582719,
     status: 'processing',
-    isChecked: false,
+    checked: false,
   },
   {
     author: {
@@ -72,7 +72,7 @@ const dummyJobList = [
     fileName: 'File 005',
     uploadTimestamp: 1698584719,
     status: 'processing',
-    isChecked: false,
+    checked: false,
   },
   {
     author: {
@@ -83,7 +83,7 @@ const dummyJobList = [
     fileName: 'File 006',
     uploadTimestamp: 1698684719,
     status: 'processing',
-    isChecked: false,
+    checked: false,
   },
   {
     author: {
@@ -94,7 +94,7 @@ const dummyJobList = [
     fileName: 'File 129',
     uploadTimestamp: 1698282719,
     status: 'done',
-    isChecked: false,
+    checked: false,
   },
   {
     author: {
@@ -105,13 +105,13 @@ const dummyJobList = [
     fileName: 'File 141',
     uploadTimestamp: 1698402719,
     status: 'done',
-    isChecked: false,
+    checked: false,
   },
 ];
 
 const Main = () => {
   const {data: session, status} = useSession();
-  const content = session ? <OperationView session={session} /> : <LoginView />;
+  const content = !session ? <OperationView session={session} /> : <LoginView />;
   const view = (
     <div className="p-10px font-roboto flex min-h-screen max-w-1032px mx-auto justify-center items-center">
       {content}
@@ -122,8 +122,9 @@ const Main = () => {
 
 const LoginView = () => {
   const view = (
-    <div className="flex flex-col justify-center items-center h-720px w-full bg-white rounded">
-      <div className="text-2xl font-bold w-720px">
+    <div className="flex flex-col justify-center items-end bg-cover bg-login h-720px w-full bg-white rounded">
+      <div className="text-2xl font-bold w-1/2 p-20 space-y-12">
+        <h1 className="text-black text-42px">Sign in</h1>
         <GoogleLogin
           onSuccess={credentialResponse => {
             console.log(credentialResponse);
@@ -132,6 +133,8 @@ const LoginView = () => {
             console.log('Login Failed');
           }}
         />
+        <div className="h-px bg-coolGray w-full"></div>
+        <div className="text-sm text-darkBlue">No account yet? Sign Up</div>
       </div>
     </div>
   );
@@ -234,6 +237,8 @@ const JobBoard = ({menu}: {menu: 'overview' | 'collaborators'}) => {
   // Info: (20231025 - Julian) Pagination
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(Math.ceil(dummyJobList.length / ITEMS_PER_PAGE));
+  // Info: (20231025 - Julian) Select All
+  const [selectAll, setSelectAll] = useState(false);
 
   const endIdx = activePage * ITEMS_PER_PAGE;
   const startIdx = endIdx - ITEMS_PER_PAGE;
@@ -266,6 +271,7 @@ const JobBoard = ({menu}: {menu: 'overview' | 'collaborators'}) => {
   );
 
   const uploadDateSortHandler = () => setSortByNewest(!sortByNewest);
+  const selectAllHandler = () => setSelectAll(!selectAll);
 
   const filteredJobList = dummyJobList
     // Info: (20231025 - Julian) Filter by tab
@@ -296,7 +302,7 @@ const JobBoard = ({menu}: {menu: 'overview' | 'collaborators'}) => {
         fileName={job.fileName}
         uploadTimestamp={job.uploadTimestamp}
         status={job.status}
-        isChecked={job.isChecked}
+        checked={job.checked}
       />
     )) // Info: (20231025 - Julian) Pagination
     .slice(startIdx, endIdx);
@@ -373,7 +379,12 @@ const JobBoard = ({menu}: {menu: 'overview' | 'collaborators'}) => {
         {/* Info: (20231025 - Julian) Job List Header */}
         <div className="flex items-center h-50px border border-primaryGreen bg-primaryGreen text-sm text-white p-2">
           <div className="w-6">
-            <input type="checkbox" className="accent-white" />
+            <input
+              type="checkbox"
+              className="accent-white"
+              checked={selectAll}
+              onChange={selectAllHandler}
+            />
           </div>
           {/* Info: (20231025 - Julian) Author */}
           <div className="w-180px px-3 whitespace-nowrap">Author</div>

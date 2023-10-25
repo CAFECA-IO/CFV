@@ -8,7 +8,6 @@ interface IPagination {
 }
 
 const Pagination = ({activePage, setActivePage, totalPages}: IPagination) => {
-  const arrowSize = 'h-6 w-6';
   const truncationLimit = 5;
   const surroundPage = Math.floor(truncationLimit / 2);
 

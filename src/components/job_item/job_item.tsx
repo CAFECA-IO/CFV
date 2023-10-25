@@ -12,10 +12,10 @@ interface JobItemProps {
   fileName: string;
   uploadTimestamp: number;
   status: string;
-  isChecked: boolean;
+  checked: boolean;
 }
 
-const JobItem = ({author, fileName, uploadTimestamp, status, isChecked}: JobItemProps) => {
+const JobItem = ({author, fileName, uploadTimestamp, status, checked}: JobItemProps) => {
   const uploadDate = timestampToString(uploadTimestamp);
 
   const displayedStatus =
@@ -51,7 +51,7 @@ const JobItem = ({author, fileName, uploadTimestamp, status, isChecked}: JobItem
   return (
     <div className="flex items-center border-x border-b border-coolGray p-2 h-50px">
       <div className="w-6 flex items-center">
-        <input type="checkbox" className="accent-primaryGreen" checked={isChecked} />
+        <input type="checkbox" className="accent-primaryGreen" />
       </div>
       {/* Info: (20231024 - Julian) Author */}
       <div className="flex items-center space-x-2 w-180px">
