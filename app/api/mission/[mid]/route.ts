@@ -21,31 +21,37 @@ export async function DELETE(request: NextRequest, context: { params }) {
   const mid = context.params.mid;
 
   // delete mission
-  await prisma.missions
-    .delete({
-      where: {
-        id: mid,
-      },
-    })
-    .catch();
+  try {
+    await prisma.missions
+      .delete({
+        where: {
+          id: mid,
+        },
+      });
+  } catch(e) {};
 
   // delete jobs
-  await prisma.jobs
-    .deleteMany({
-      where: {
-        mission_id: mid,
-      },
-    })
-    .catch();
+  try {
+    await prisma.jobs
+      .deleteMany({
+        where: {
+          mission_id: mid,
+        },
+      })
+  } catch(e) {};
 
   // delete folder
   const folder = process.env.FOLDER as string;
   const missionFolder = getMissionFolder(mid);
-  await fs.rmdir(missionFolder, { recursive: true }).catch();
+  try {
+    await fs.rmdir(missionFolder, { recursive: true });
+  } catch(e) {};
 
   // delete zip file
   const filePath = getMissionZipPath(mid);
-  await fs.unlink(filePath).catch();
+  try {
+    await fs.unlink(filePath);
+  } catch(e) {};
 
   const result = {
     success: true,
