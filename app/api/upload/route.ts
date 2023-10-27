@@ -105,7 +105,7 @@ const doJob = async (job) => {
   const n = await page.$("#section-directions-trip-0");
   const t = await n?.getProperty('textContent');
   const j = await t?.jsonValue() || '';
-  const d = j.match(/([0-9]*[.])?[0-9]+ [km|公里]/)?.at(0) as unknown as string;
+  const d = j.match(/([0-9]*[.])?[0-9]+ [km|公里]/)?.at(0) as unknown as string || '?? km';
   const distance = (d.split(' ')?.at(0) || '??') + ' km';
 
   // wait for the selector appear on the page
@@ -257,7 +257,7 @@ async function getDistance(filePath: string, address1: string, address2: string,
     const n = await page.$("#section-directions-trip-0");
     const t = await n?.getProperty('textContent');
     const j = await t?.jsonValue() || '';
-    const d = j.match(/([0-9]*[.])?[0-9]+ [km|公里]/)?.at(0) as unknown as string;
+    const d = j.match(/([0-9]*[.])?[0-9]+ [km|公里]/)?.at(0) as unknown as string || '?? km';
     const distance = (d.split(' ')?.at(0) || '??') + ' km';
 
     // wait for the selector appear on the page
