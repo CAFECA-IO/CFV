@@ -1,0 +1,81 @@
+{
+	"info": {
+		"_postman_id": "2f4e98a8-8afc-4ddc-a0a9-ca875e7127c2",
+		"name": "CFV",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "226772"
+	},
+	"item": [
+		{
+			"name": "upload excel",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/Volumes/DATA/workspace/CFV/src/xlsx/mini.xlsx"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/upload",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"upload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list mission",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/mission",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"mission"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "download zip",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/mission/clo6hgbt30000ds83fsjgakkv",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"mission",
+						"clo6hgbt30000ds83fsjgakkv"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
