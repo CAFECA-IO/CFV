@@ -22,7 +22,7 @@
 					]
 				},
 				"url": {
-					"raw": "http://localhost:3000/api/upload",
+					"raw": "http://localhost:3000/api/mission",
 					"protocol": "http",
 					"host": [
 						"localhost"

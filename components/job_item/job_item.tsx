@@ -33,7 +33,6 @@ const JobItem = ({
     await fetch(`/api/mission/${missionId}`, {
       method: "DELETE",
     });
-    alert("Mission Deleted");
   };
 
   const displayedStatus =

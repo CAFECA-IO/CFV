@@ -74,13 +74,13 @@ const Overview = () => {
     event.preventDefault();
     setAllJobDone(false);
 
-    await fetch(`/api/upload`, {
+    await fetch(`/api/mission`, {
       method: "POST",
       body: new FormData(document.forms["uploadForm"]),
     }).then((res) => {
       if (res.ok) {
         // ToDo: (20231027 - Julian) Add loading animation
-        alert("Upload success.");
+
         // Info: (20231027 - Julian) Get mission list
         getMissions();
         // Info: (20231027 - Julian) Clear input
