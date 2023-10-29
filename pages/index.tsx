@@ -82,14 +82,6 @@ const MenuView = ({
     <div className="w-250px flex flex-col z-10 space-y-10 items-center h-full rounded px-4 py-6 bg-white shadow-xl">
       {/* Info: (20231024 - Julian) Logo */}
       <div>
-        <GoogleLogin
-          onSuccess={credentialResponse => {
-            console.log(credentialResponse);
-          }}
-          onError={() => {
-            console.log('Login Failed');
-          }}
-        />
         <Image src="/logo.png" width={100} height={80} alt="tsmc_logo" />
       </div>
       {/* Info: (20231024 - Julian) User Info */}
