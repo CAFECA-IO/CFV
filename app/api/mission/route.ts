@@ -6,11 +6,12 @@ import { join } from "path";
 import { writeFile, mkdir } from "fs/promises";
 import XLSX, { read } from "xlsx";
 import puppeteer from "puppeteer";
+import { ITEMS_PER_PAGE } from "../../../constants/config";
 
 const prisma = new PrismaClient();
 
 const listMission = async (page: number = 1) => {
-  const missionsPerPage = 7;
+  const missionsPerPage = ITEMS_PER_PAGE;
   const missionCount = await prisma.missions.count();
   const pages = Math.ceil(missionCount / missionsPerPage);
   const rawMissions = await prisma.missions.findMany({

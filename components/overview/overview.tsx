@@ -3,7 +3,6 @@ import DatePicker from "../../components/date_picker/date_picker";
 import JobItem from "../../components/job_item/job_item";
 import Pagination from "../../components/pagination/pagination";
 import { BsArrowDownShort, BsArrowUpShort } from "react-icons/bs";
-import { ITEMS_PER_PAGE } from "../../constants/config";
 import { IMission } from "../../interfaces/mission";
 import { FiSearch } from "react-icons/fi";
 import { FaArrowAltCircleDown } from "react-icons/fa";
@@ -42,10 +41,7 @@ const Overview = () => {
   const [sortByNewest, setSortByNewest] = useState(true);
   // Info: (20231025 - Julian) Pagination
   const [activePage, setActivePage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-
-  const endIdx = activePage * ITEMS_PER_PAGE;
-  const startIdx = endIdx - ITEMS_PER_PAGE;
+  const [totalPages, setTotalPages] = useState(missions?.totalPage ?? 1);
 
   const uploadDateSortHandler = () => setSortByNewest(!sortByNewest);
 
@@ -100,7 +96,7 @@ const Overview = () => {
 
   // Info: (20231027 - Julian) Get mission list
   const getMissions = async () => {
-    const response = await fetch("/api/mission?page=2", {
+    const response = await fetch(`/api/mission?page=${activePage}`, {
       method: "GET",
     });
     const missions: IMission = await response.json();
@@ -112,8 +108,7 @@ const Overview = () => {
       setAllJobDone(false);
     }
     setMissions(missions);
-    //setTotalPages(missions.totalPage);
-    setTotalPages(Math.ceil(missions.missions.length / ITEMS_PER_PAGE));
+    setTotalPages(missions.totalPage);
   };
 
   const jobList = missions?.missions.map((mission) => ({
@@ -156,10 +151,11 @@ const Overview = () => {
         )
     : [];
 
-  useEffect(() => {
-    setActivePage(1);
-    setTotalPages(Math.ceil(filteredJobList.length / ITEMS_PER_PAGE));
-  }, [currentTab, searchText, filteredDate, sortByNewest]);
+  // Info: (20231030 - Julian) Filter
+  // useEffect(() => {
+  //   setActivePage(1);
+  //   setTotalPages(Math.ceil(filteredJobList.length / ITEMS_PER_PAGE));
+  // }, [currentTab, searchText, filteredDate, sortByNewest]);
 
   useEffect(() => {
     // Info: (20231025 - Julian) If not all job done, check every 5 seconds
@@ -170,6 +166,10 @@ const Overview = () => {
       return () => clearInterval(interval);
     }
   }, [allJobDone]);
+
+  useEffect(() => {
+    getMissions();
+  }, [activePage]);
 
   const jobListSkeleton = isLoading ? (
     <div className="animate-pulse w-full flex items-center border-x border-b border-coolGray p-2 h-50px">
@@ -208,10 +208,9 @@ const Overview = () => {
     <>
       {jobListSkeleton}
       {isLoading
-        ? displayedJobList // Info: (20231030 - Julian) 為了放入 loading skeleton ， job list 需要多切一個
-            .slice(startIdx, endIdx - 1)
-        : displayedJobList // Info: (20231030 - Julian) Pagination
-            .slice(startIdx, endIdx)}
+        ? displayedJobList // Info: (20231030 - Julian) 為了放入 loading skeleton ， job list 需要切掉最後一個
+            .slice(0, -1)
+        : displayedJobList}
     </>
   );
 
