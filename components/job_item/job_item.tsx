@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useState, Dispatch, SetStateAction } from "react";
 import { FiDownload } from "react-icons/fi";
 import { TbTrash } from "react-icons/tb";
 import { timestampToString } from "../../lib/common";
@@ -14,6 +15,7 @@ interface JobItemProps {
   uploadTimestamp: number;
   progress: number;
   status: string;
+  setAllJobDone: Dispatch<SetStateAction<boolean>>;
 }
 
 const JobItem = ({
@@ -23,16 +25,21 @@ const JobItem = ({
   uploadTimestamp,
   progress,
   status,
+  setAllJobDone,
 }: JobItemProps) => {
   const uploadDate = timestampToString(uploadTimestamp);
   const truncateFileName =
     fileName.length > 10 ? `${fileName.slice(0, 10)}...` : fileName;
   const progressPercent = Math.round(progress * 100);
 
+  const [isDelete, setIsDelete] = useState(false);
+
   const deleteMission = async () => {
     await fetch(`/api/mission/${missionId}`, {
       method: "DELETE",
     });
+    setIsDelete(true);
+    setAllJobDone(false);
   };
 
   const displayedStatus =
@@ -52,6 +59,10 @@ const JobItem = ({
         >
           <FiDownload color="#101010" size={16} />
         </a>
+        {/* Info: (20231025 - Julian) Download/Stop Button */}
+        <button className="w-5 mx-auto" onClick={deleteMission}>
+          <TbTrash color="#101010" size={16} />
+        </button>
       </>
     ) : (
       <>
@@ -75,7 +86,11 @@ const JobItem = ({
     );
 
   return (
-    <div className="flex items-center border-x border-b border-coolGray p-2 h-50px">
+    <div
+      className={`flex items-center border-x border-b border-coolGray 
+     ${isDelete ? "opacity-50" : "opacity-100"}
+      p-2 h-50px transition-all duration-300 ease-in-out`}
+    >
       <div className="w-6 flex items-center opacity-0">
         <input type="checkbox" className="accent-primaryGreen" />
       </div>

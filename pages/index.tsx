@@ -115,7 +115,7 @@ const MenuView = ({
           <PiHouseBold size={24} />
           <p>Overview</p>
         </button>
-        {/* Info: (20231024 - Julian) Collaborators
+        {/* Info: (20231024 - Julian) Collaborators 
         <button
           onClick={() => setMenu("collaborators")}
           className={`flex w-full font-bold border text-base ${
@@ -126,8 +126,7 @@ const MenuView = ({
         >
           <LuUsers size={24} />
           <p>Collaborators</p>
-        </button>
-        */}
+        </button> */}
       </div>
     </div>
   );

@@ -14,7 +14,7 @@ const Overview = () => {
 
   // Info: (20231027 - Julian) Mission State
   const [missions, setMissions] = useState<IMission>();
-  //const [isloading, setIsLoading] = useState(false);
+  const [isloading, setIsLoading] = useState(true);
   const [allJobDone, setAllJobDone] = useState(false);
   // Info: (20231024 - Julian) Filter State
   const [searchText, setSearchText] = useState("");
@@ -80,7 +80,7 @@ const Overview = () => {
     }).then((res) => {
       if (res.ok) {
         // ToDo: (20231027 - Julian) Add loading animation
-
+        setIsLoading(true);
         // Info: (20231027 - Julian) Get mission list
         getMissions();
         // Info: (20231027 - Julian) Clear input
@@ -97,12 +97,14 @@ const Overview = () => {
       method: "GET",
     });
     const missions: IMission = await response.json();
+    if (response.ok) setIsLoading(false);
     // Info: (20231025 - Julian) Check if all job done
     if (missions.missions.every((mission) => mission.done)) {
       setAllJobDone(true);
     } else {
       setAllJobDone(false);
     }
+    setIsLoading(false);
     setMissions(missions);
     setTotalPages(missions.totalPage);
   };
@@ -162,21 +164,7 @@ const Overview = () => {
     }
   }, [allJobDone]);
 
-  const displayedJobList = filteredJobList
-    .map((job, index) => (
-      <JobItem
-        missionId={job.id}
-        key={index}
-        author={job.author}
-        fileName={job.fileName}
-        uploadTimestamp={job.uploadTimestamp}
-        progress={job.progress}
-        status={job.status}
-      />
-    )) // Info: (20231025 - Julian) Pagination
-    .slice(startIdx, endIdx);
-
-  const jobListSkeleton = (
+  const jobListSkeleton = isloading ? (
     <div className="animate-pulse w-full flex items-center border-x border-b border-coolGray p-2 h-50px">
       <div className="flex items-center space-x-4 w-200px">
         <div className="ml-6 rounded-full w-40px h-40px bg-coolGray"></div>
@@ -193,6 +181,26 @@ const Overview = () => {
         <div className="w-20px h-20px bg-coolGray rounded-full"></div>
       </div>
     </div>
+  ) : null;
+
+  const displayedJobList = (
+    <>
+      {jobListSkeleton}
+      {filteredJobList
+        .map((job, index) => (
+          <JobItem
+            missionId={job.id}
+            key={index}
+            author={job.author}
+            fileName={job.fileName}
+            uploadTimestamp={job.uploadTimestamp}
+            progress={job.progress}
+            status={job.status}
+            setAllJobDone={setAllJobDone}
+          />
+        )) // Info: (20231025 - Julian) Pagination
+        .slice(startIdx, endIdx)}
+    </>
   );
 
   const overview = (
