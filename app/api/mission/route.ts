@@ -96,7 +96,7 @@ const closeMission = async (mission) => {
       };
     }
     const row = JSON.parse(job.data);
-    row["Distance"] = job.distance;
+    row["Distance(km)"] = job.distance;
     sheetList[job.sheet].data.push(row);
   }
   for (let sheetName in sheetList) {
@@ -144,8 +144,9 @@ const closeMissions = async () => {
   }
 };
 const doJob = async (job) => {
+  const id = Object.values(JSON.parse(job.data)).at(0);
   const mFolder = missionFolder(job.mission_id);
-  const filePath = join(mFolder, `${job.sheet}-${job.row}.png`);
+  const filePath = join(mFolder, `${job.sheet}-${job.row}-${id}.png`);
   const encodeAddress1 = encodeURIComponent(job.from as string);
   const encodeAddress2 = encodeURIComponent(job.to as string);
   const browser = await puppeteer.launch();
@@ -160,7 +161,7 @@ const doJob = async (job) => {
   const d =
     (j.match(/([0-9]*[.])?[0-9]+ [km|公里]/)?.at(0) as unknown as string) ||
     "?? km";
-  const distance = (d.split(" ")?.at(0) || "??") + " km";
+  const distance = (d.split(" ")?.at(0) || "??");
 
   // wait for the selector appear on the page
   await page.screenshot({
