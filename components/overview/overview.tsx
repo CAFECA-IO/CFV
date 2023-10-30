@@ -100,7 +100,7 @@ const Overview = () => {
 
   // Info: (20231027 - Julian) Get mission list
   const getMissions = async () => {
-    const response = await fetch("/api/mission", {
+    const response = await fetch("/api/mission?page=2", {
       method: "GET",
     });
     const missions: IMission = await response.json();
@@ -264,7 +264,7 @@ const Overview = () => {
                 currentTab === "all" ? "bg-primaryGreen" : "bg-black"
               }`}
             >
-              {missions?.missions.length}
+              {missions?.missions.length ?? 0}
             </p>
           </button>
           <button
@@ -281,7 +281,8 @@ const Overview = () => {
                 currentTab === "processing" ? "bg-primaryGreen" : "bg-black"
               }`}
             >
-              {missions?.missions.filter((mission) => !mission.done).length}
+              {missions?.missions.filter((mission) => !mission.done).length ??
+                0}
             </p>
           </button>
           <button
@@ -298,7 +299,7 @@ const Overview = () => {
                 currentTab === "done" ? "bg-primaryGreen" : "bg-black"
               }`}
             >
-              {missions?.missions.filter((mission) => mission.done).length}
+              {missions?.missions.filter((mission) => mission.done).length ?? 0}
             </p>
           </button>
         </div>

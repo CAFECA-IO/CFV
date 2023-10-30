@@ -10,7 +10,7 @@ import puppeteer from "puppeteer";
 const prisma = new PrismaClient();
 
 const listMission = async (page: number = 1) => {
-  const missionsPerPage = 15;
+  const missionsPerPage = 7;
   const missionCount = await prisma.missions.count();
   const pages = Math.ceil(missionCount / missionsPerPage);
   const rawMissions = await prisma.missions.findMany({
@@ -361,7 +361,9 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({ success: true });
 }
 
-export async function GET(request: NextRequest) {
-  const missions = await listMission();
+export async function GET(request: NextRequest, context: { params }) {
+  const { searchParams } = new URL(request.url);
+  const page = (searchParams?.get("page") as unknown as number) || 1;
+  const missions = await listMission(page);
   return NextResponse.json(missions);
 }
