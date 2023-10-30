@@ -6,10 +6,18 @@ import { BsArrowDownShort, BsArrowUpShort } from "react-icons/bs";
 import { ITEMS_PER_PAGE } from "../../constants/config";
 import { IMission } from "../../interfaces/mission";
 import { FiSearch } from "react-icons/fi";
+import { FaArrowAltCircleDown } from "react-icons/fa";
 import { BiRightArrowAlt, BiSolidPlusCircle } from "react-icons/bi";
 
 const Overview = () => {
-  const endDate = Math.floor(new Date().getTime() / 1000 + 86399);
+  const today = Math.floor(
+    new Date(
+      `${new Date().getFullYear()}-${
+        new Date().getMonth() + 1
+      }-${new Date().getDate()} 00:00:00`
+    ).getTime() / 1000
+  );
+  const endDate = today + 86399;
   const startDate = endDate - 86400 * 30;
 
   // Info: (20231027 - Julian) Mission State
@@ -60,10 +68,10 @@ const Overview = () => {
 
   const dateEndUpdateHandler = useCallback(
     async (date: number) => {
-      setDateEnd(date);
+      setDateEnd(date + 86399);
       setFilteredDate({
         startTimeStamp: dateStart,
-        endTimeStamp: date,
+        endTimeStamp: date + 86399,
       });
     },
     [dateStart, filteredDate]
@@ -272,6 +280,12 @@ const Overview = () => {
         </div>
         {/* Info: (20231024 - Julian) Buttons */}
         <div className="flex items-center space-x-4">
+          {/* Info: (20231030 - Julian) Template Download Button */}
+          <button className="flex items-center space-x-2 text-sm text-white bg-primaryGreen rounded-full px-2 py-1">
+            <FaArrowAltCircleDown color="white" size={20} />
+            <p>Template</p>
+          </button>
+          {/* Info: (20231030 - Julian) Upload Button */}
           <form id="uploadForm" target="hidden-form">
             <label className="hover:cursor-pointer">
               <BiSolidPlusCircle color="#57BE6C" size={40} />

@@ -92,11 +92,13 @@ const JobItem = ({
     );
 
   return (
-    <div
-      className={`flex items-center border-x border-b border-coolGray 
-     ${isDelete ? "opacity-50" : "opacity-100"}
-      p-2 h-50px transition-all duration-300 ease-in-out`}
-    >
+    <div className="relative flex items-center border-x border-b border-coolGray p-2 h-50px">
+      {/* Info: (20231030 - Julian) Delete Overlay */}
+      <div
+        className={`absolute top-0 left-0 w-full h-full bg-white z-10 ${
+          isDelete ? "opacity-70 visible" : "opacity-0 invisible"
+        } transition-all duration-300 ease-in-out`}
+      ></div>
       <div className="w-6 flex items-center opacity-0">
         <input type="checkbox" className="accent-primaryGreen" />
       </div>
