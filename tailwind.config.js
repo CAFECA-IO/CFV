@@ -30,6 +30,7 @@ module.exports = {
         "3/4": "75%",
 
         "2px": "2px",
+        "6px": "6px",
         "8px": "8px",
         "10px": "10px",
         "15px": "15px",
