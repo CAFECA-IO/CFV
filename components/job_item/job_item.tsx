@@ -62,6 +62,7 @@ const JobItem = ({
           href={`/api/mission/${missionId}`}
           target="_blank"
           className="w-5 mx-auto"
+          rel="noreferrer"
         >
           <FiDownload color="#101010" size={16} />
         </a>

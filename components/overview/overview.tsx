@@ -22,7 +22,9 @@ const Overview = () => {
 
   // Info: (20231027 - Julian) Mission State
   const [missions, setMissions] = useState<IMission>();
-  const [isloading, setIsLoading] = useState(true);
+  // Info: (20231030 - Julian) is show loading skeleton
+  const [isLoading, setIsLoading] = useState(true);
+  // Info: (20231027 - Julian) is fetch API
   const [allJobDone, setAllJobDone] = useState(false);
   // Info: (20231024 - Julian) Filter State
   const [searchText, setSearchText] = useState("");
@@ -41,14 +43,11 @@ const Overview = () => {
   // Info: (20231025 - Julian) Pagination
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  // Info: (20231025 - Julian) Select All
-  const [selectAll, setSelectAll] = useState(false);
 
   const endIdx = activePage * ITEMS_PER_PAGE;
   const startIdx = endIdx - ITEMS_PER_PAGE;
 
   const uploadDateSortHandler = () => setSortByNewest(!sortByNewest);
-  const selectAllHandler = () => setSelectAll(!selectAll);
 
   const searchChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = event.target.value;
@@ -87,7 +86,7 @@ const Overview = () => {
       body: new FormData(document.forms["uploadForm"]),
     }).then((res) => {
       if (res.ok) {
-        // ToDo: (20231027 - Julian) Add loading animation
+        // Info: (20231030 - Julian) Show loading skeleton
         setIsLoading(true);
         // Info: (20231027 - Julian) Get mission list
         getMissions();
@@ -112,9 +111,9 @@ const Overview = () => {
     } else {
       setAllJobDone(false);
     }
-    setIsLoading(false);
     setMissions(missions);
-    setTotalPages(missions.totalPage);
+    //setTotalPages(missions.totalPage);
+    setTotalPages(Math.ceil(missions.missions.length / ITEMS_PER_PAGE));
   };
 
   const jobList = missions?.missions.map((mission) => ({
@@ -172,7 +171,7 @@ const Overview = () => {
     }
   }, [allJobDone]);
 
-  const jobListSkeleton = isloading ? (
+  const jobListSkeleton = isLoading ? (
     <div className="animate-pulse w-full flex items-center border-x border-b border-coolGray p-2 h-50px">
       <div className="flex items-center space-x-4 w-200px">
         <div className="ml-6 rounded-full w-40px h-40px bg-coolGray"></div>
@@ -191,24 +190,28 @@ const Overview = () => {
     </div>
   ) : null;
 
-  const displayedJobList = (
+  const displayedJobList = filteredJobList.map((job, index) => (
+    <JobItem
+      missionId={job.id}
+      key={index}
+      author={job.author}
+      fileName={job.fileName}
+      uploadTimestamp={job.uploadTimestamp}
+      progress={job.progress}
+      status={job.status}
+      allJobDone={allJobDone}
+      setAllJobDone={setAllJobDone}
+    />
+  ));
+
+  const displayedMissions = (
     <>
       {jobListSkeleton}
-      {filteredJobList
-        .map((job, index) => (
-          <JobItem
-            missionId={job.id}
-            key={index}
-            author={job.author}
-            fileName={job.fileName}
-            uploadTimestamp={job.uploadTimestamp}
-            progress={job.progress}
-            status={job.status}
-            allJobDone={allJobDone}
-            setAllJobDone={setAllJobDone}
-          />
-        )) // Info: (20231025 - Julian) Pagination
-        .slice(startIdx, endIdx)}
+      {isLoading
+        ? displayedJobList // Info: (20231030 - Julian) 為了放入 loading skeleton ， job list 需要多切一個
+            .slice(startIdx, endIdx - 1)
+        : displayedJobList // Info: (20231030 - Julian) Pagination
+            .slice(startIdx, endIdx)}
     </>
   );
 
@@ -249,42 +252,69 @@ const Overview = () => {
         <div className="flex items-center border-b border-coolGray space-x-4">
           <button
             onClick={() => setCurrentTab("all")}
-            className={`border-b py-2 px-3 transition-all duration-200 ease-in-out ${
+            className={`border-b flex items-center py-2 px-3 space-x-1 ${
               currentTab === "all"
                 ? "border-primaryGreen text-primaryGreen"
                 : "border-transparent"
-            }`}
+            } transition-all duration-200 ease-in-out`}
           >
-            <p>All</p>
+            <p className="text-base">All</p>
+            <p
+              className={`rounded-full text-white px-6px py-2px text-xs ${
+                currentTab === "all" ? "bg-primaryGreen" : "bg-black"
+              }`}
+            >
+              {missions?.missions.length}
+            </p>
           </button>
           <button
             onClick={() => setCurrentTab("processing")}
-            className={`border-b py-2 px-3 transition-all duration-200 ease-in-out ${
+            className={`border-b flex items-center py-2 px-3 space-x-1 ${
               currentTab === "processing"
                 ? "border-primaryGreen text-primaryGreen"
                 : "border-transparent"
-            }`}
+            } transition-all duration-200 ease-in-out`}
           >
-            <p>Processing</p>
+            <p className="text-base">Processing</p>
+            <p
+              className={`rounded-full text-white px-6px py-2px text-xs ${
+                currentTab === "processing" ? "bg-primaryGreen" : "bg-black"
+              }`}
+            >
+              {missions?.missions.filter((mission) => !mission.done).length}
+            </p>
           </button>
           <button
             onClick={() => setCurrentTab("done")}
-            className={`border-b py-2 px-3 transition-all duration-200 ease-in-out ${
+            className={`border-b flex items-center py-2 px-3 space-x-1 ${
               currentTab === "done"
                 ? "border-primaryGreen text-primaryGreen"
                 : "border-transparent"
-            }`}
+            } transition-all duration-200 ease-in-out`}
           >
-            <p>Done</p>
+            <p className="text-base">Done</p>
+            <p
+              className={`rounded-full text-white px-6px py-2px text-xs ${
+                currentTab === "done" ? "bg-primaryGreen" : "bg-black"
+              }`}
+            >
+              {missions?.missions.filter((mission) => mission.done).length}
+            </p>
           </button>
         </div>
         {/* Info: (20231024 - Julian) Buttons */}
         <div className="flex items-center space-x-4">
           {/* Info: (20231030 - Julian) Template Download Button */}
-          <button className="flex items-center space-x-2 text-sm text-white bg-primaryGreen rounded-full px-2 py-1">
+          <a
+            href="/template.xlsx"
+            download="template.xlsx"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center space-x-2 text-sm text-white bg-primaryGreen rounded-full px-2 py-1"
+          >
             <FaArrowAltCircleDown color="white" size={20} />
             <p>Template</p>
-          </button>
+          </a>
           {/* Info: (20231030 - Julian) Upload Button */}
           <form id="uploadForm" target="hidden-form">
             <label className="hover:cursor-pointer">
@@ -309,8 +339,8 @@ const Overview = () => {
             <input
               type="checkbox"
               className="accent-white"
-              checked={selectAll}
-              onChange={selectAllHandler}
+              //checked={selectAll}
+              //onChange={selectAllHandler}
             />
           </div>
           {/* Info: (20231025 - Julian) Author */}
@@ -335,8 +365,7 @@ const Overview = () => {
           {/* Info: (20231025 - Julian) Job Status */}
           <div className="flex-1">Status</div>
         </div>
-
-        {displayedJobList}
+        {displayedMissions}
       </div>
       {/* Info: (20231025 - Julian) Pagination */}
       <div className="w-full flex justify-center my-6">
