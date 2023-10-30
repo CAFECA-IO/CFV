@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useState, Dispatch, SetStateAction } from "react";
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { FiDownload } from "react-icons/fi";
 import { TbTrash } from "react-icons/tb";
 import { timestampToString } from "../../lib/common";
@@ -15,6 +15,7 @@ interface JobItemProps {
   uploadTimestamp: number;
   progress: number;
   status: string;
+  allJobDone: boolean;
   setAllJobDone: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -25,6 +26,7 @@ const JobItem = ({
   uploadTimestamp,
   progress,
   status,
+  allJobDone,
   setAllJobDone,
 }: JobItemProps) => {
   const uploadDate = timestampToString(uploadTimestamp);
@@ -33,6 +35,10 @@ const JobItem = ({
   const progressPercent = Math.round(progress * 100);
 
   const [isDelete, setIsDelete] = useState(false);
+
+  useEffect(() => {
+    if (allJobDone) setIsDelete(false);
+  }, [allJobDone]);
 
   const deleteMission = async () => {
     await fetch(`/api/mission/${missionId}`, {

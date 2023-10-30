@@ -196,6 +196,7 @@ const Overview = () => {
             uploadTimestamp={job.uploadTimestamp}
             progress={job.progress}
             status={job.status}
+            allJobDone={allJobDone}
             setAllJobDone={setAllJobDone}
           />
         )) // Info: (20231025 - Julian) Pagination
