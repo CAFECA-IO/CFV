@@ -10,6 +10,18 @@ import { ITEMS_PER_PAGE } from "../../../constants/config";
 
 const prisma = new PrismaClient();
 
+// 陸運： https://www.google.com/maps/
+// 空運： https://www.icao.int/environmental-protection/Carbonoffset/Pages/default.aspx
+// 海運： https://www.searates.com/services/distances-time/
+
+// 港口資訊： https://www.marinetraffic.com/zh/ais/details/ports/1253?name=SHANGHAI&country=China
+// 陸運海運空運：
+// 起點 終點 航運別：
+
+// 1. NO 起點 終點
+// 2. replace_template.xlsx 覆蓋 template
+// 3. 帳號管理 admin / 新增刪除 user / 自行變更密碼
+
 const listMission = async (page: number = 1) => {
   const missionsPerPage = ITEMS_PER_PAGE;
   const missionCount = await prisma.missions.count();
@@ -320,6 +332,8 @@ async function getDistance(
       `https://www.google.com/maps/dir/${encodeAddress1}/${encodeAddress2}/`
     );
 
+    // wait for 1 second
+    await sleep(1000);
     const n = await page.$("#section-directions-trip-0");
     const t = await n?.getProperty("textContent");
     const j = (await t?.jsonValue()) || "";
