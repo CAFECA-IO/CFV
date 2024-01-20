@@ -15,7 +15,7 @@ const dummyUser = {
 
 const Main = () => {
   const { data: session, status } = useSession();
-  const content = !session ? (
+  const content = session ? (
     <OperationView session={session} />
   ) : (
     <LoginView />
@@ -33,14 +33,9 @@ const LoginView = () => {
     <div className="flex flex-col justify-center items-end bg-cover bg-login h-720px w-full bg-white rounded">
       <div className="text-2xl font-bold w-1/2 p-20 space-y-12">
         <h1 className="text-black text-42px">Sign in</h1>
-        <GoogleLogin
-          onSuccess={(credentialResponse) => {
-            console.log(credentialResponse);
-          }}
-          onError={() => {
-            console.log("Login Failed");
-          }}
-        />
+        <button onClick={() => signIn("google")} className="flex items-center gap-4 shadow-xl rounded-lg pl-3">
+          <Image src="/google_login.png" width={300} height={30} alt="google_logo" />
+        </button>
         <div className="h-px bg-coolGray w-full"></div>
         <div className="flex items-center space-x-1">
           <PiPlantFill color="red" />
@@ -64,7 +59,7 @@ const OperationView = (session) => {
 
   const view = (
     <div className="relative flex items-start justify-start w-full h-720px rounded bg-white">
-      <MenuView menu={menu} setMenu={setMenu} />
+      <MenuView session={session} menu={menu} setMenu={setMenu} />
       <JobBoard menu={menu} />
     </div>
   );
@@ -72,9 +67,11 @@ const OperationView = (session) => {
   return view;
 };
 const MenuView = ({
+  session,
   menu,
   setMenu,
 }: {
+  session: any;
   menu: "overview" | "collaborators";
   setMenu: Dispatch<SetStateAction<"overview" | "collaborators">>;
 }) => {
@@ -97,8 +94,9 @@ const MenuView = ({
         </div>
         {/* Info: (20231024 - Julian) User Name & Email */}
         <div className="flex flex-col">
-          <h2 className="text-sm text-black">{dummyUser.name}</h2>
-          <p className="text-gray text-xs">{dummyUser.email}</p>
+          <h2 className="text-sm text-black">{session.session.user.name}</h2>
+          <p className="text-gray text-xs">{session.session.user.email}</p>
+          <p className="text-gray text-xs">quota: 0</p>
         </div>
       </div>
       {/* Info: (20231024 - Julian) Menu Items */}
@@ -110,10 +108,9 @@ const MenuView = ({
             menu === "overview"
               ? "text-white border-primaryGreen bg-primaryGreen"
               : "text-black2 border-gray2 bg-white"
-          } items-center space-x-2 p-3`}
+          } items-center space-x-2 p-3 rounded-full`}
         >
-          <PiHouseBold size={24} />
-          <p>Overview</p>
+          <p>$ Charge</p>
         </button>
         {/* Info: (20231024 - Julian) Collaborators 
         <button
@@ -127,6 +124,11 @@ const MenuView = ({
           <LuUsers size={24} />
           <p>Collaborators</p>
         </button> */}
+        <button onClick={() => signOut()}
+          className="flex w-full font-bold border text-base text-white border-primaryGreen bg-primaryGreen items-center space-x-2 mt-2 p-3 rounded-full"
+        >
+          <p>Sign out</p>
+        </button>
       </div>
     </div>
   );
