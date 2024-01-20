@@ -14,19 +14,20 @@ model Users {
   id String @id @default(cuid())
   email String @unique
   name String?
-  enabled Boolean @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  enabled Boolean @default(false)
+  quota Int @default(10)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
 model Missions {
   id String @id @default(cuid())
   name String
   description String?
-  author String?
+  user_id String?
   done Boolean @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
 model Jobs {
@@ -39,6 +40,6 @@ model Jobs {
   to String
   distance String?
   done Boolean @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }

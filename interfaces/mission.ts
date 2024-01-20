@@ -4,8 +4,8 @@ export interface IMission {
     id: string;
     name: string;
     done: boolean;
-    createdAt: string;
-    updatedAt: string;
+    created_at: string;
+    updated_at: string;
     progress: number;
     user: {
       id: string;

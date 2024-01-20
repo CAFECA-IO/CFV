@@ -119,7 +119,7 @@ const Overview = () => {
       avatar: mission.user.image,
     },
     fileName: mission.name,
-    uploadTimestamp: Math.floor(new Date(mission.createdAt).getTime() / 1000),
+    uploadTimestamp: Math.floor(new Date(mission.created_at).getTime() / 1000),
     progress: mission.progress,
     status: mission.done ? "done" : "processing",
   }));
@@ -223,7 +223,7 @@ const Overview = () => {
         {/* Info: (20231024 - Julian) Search Bar */}
         <div className="flex items-center relative flex-1">
           <input
-            className="w-300px h-48px py-3 pl-12 pr-4 w-full placeholder:text-gray rounded border border-gray2 shadow-lg"
+            className="w-300px bg-white h-48px py-3 pl-12 pr-4 w-full placeholder:text-gray rounded border border-gray2 shadow-lg"
             type="search"
             placeholder="Search"
             onChange={searchChangeHandler}
