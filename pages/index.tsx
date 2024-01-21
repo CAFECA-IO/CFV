@@ -96,7 +96,7 @@ const MenuView = ({
         <div className="flex flex-col">
           <h2 className="text-sm text-black">{session.session.user.name}</h2>
           <p className="text-gray text-xs">{session.session.user.email}</p>
-          <p className="text-gray text-xs">quota: 0</p>
+          <p className="text-gray text-xs">quota: {session.session.user.quota}</p>
         </div>
       </div>
       {/* Info: (20231024 - Julian) Menu Items */}
