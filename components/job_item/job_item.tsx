@@ -121,7 +121,7 @@ const JobItem = ({
       </div>
 
       {/* Info: (20231024 - Julian) File Name */}
-      <div className="w-100px lg:block hidden">
+      <div className="w-200px lg:block hidden">
         <p className="text-black text-sm">{truncateFileName}</p>
       </div>
 

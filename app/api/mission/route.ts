@@ -298,8 +298,8 @@ const createMission = async (name: string, file: Buffer): Promise<string> => {
       count++;
       const rowString = JSON.stringify(row);
       const values = Object.values(row || {});
-      const address1 = values[1] as string;
-      const address2 = values[2] as string;
+      const address1 = row?.["起點"] as string;
+      const address2 = row?.["終點"] as string;
       const job: Prisma.JobsCreateInput = {
         mission_id: pid,
         sheet: sheetName,

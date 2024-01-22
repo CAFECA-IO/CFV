@@ -347,7 +347,7 @@ const Overview = () => {
           <div className="w-180px px-3 whitespace-nowrap">Author</div>
 
           {/* Info: (20231025 - Julian) File Name */}
-          <div className="w-100px whitespace-nowrap lg:block hidden">
+          <div className="w-200px whitespace-nowrap lg:block hidden">
             File Name
           </div>
 
