@@ -33,3 +33,12 @@ initial database
 ```shell
 npx prisma migrate dev --name init
 ```
+
+## Start Service
+```shell
+# Start Service
+pm2 start npm --name CFV -- start
+
+# Start Crawler
+pm2 start npx  --name crawler -- ts-node ./runtime/crawler.ts
+```

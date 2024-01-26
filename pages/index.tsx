@@ -2,9 +2,6 @@ import Image from "next/image";
 import Overview from "../components/overview/overview";
 import { useState, Dispatch, SetStateAction } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { GoogleLogin } from "@react-oauth/google";
-import { PiHouseBold } from "react-icons/pi";
-import { LuUsers } from "react-icons/lu";
 import { PiPlantFill } from "react-icons/pi";
 
 const dummyUser = {
