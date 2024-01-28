@@ -188,8 +188,9 @@ export async function POST(request: NextRequest) {
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
   const mission = await createMission(pid, buffer);
+  const result = { success: !!mission, mission };
 
-  return NextResponse.json({ success: true });
+  return NextResponse.json(result);
 }
 
 export async function GET(request: NextRequest, context: { params }) {

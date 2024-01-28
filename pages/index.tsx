@@ -3,6 +3,8 @@ import Overview from "../components/overview/overview";
 import { useState, Dispatch, SetStateAction } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { PiPlantFill } from "react-icons/pi";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const dummyUser = {
   name: "Jane Doe",
@@ -20,6 +22,18 @@ const Main = () => {
   const view = (
     <div className="p-10px font-roboto flex min-h-screen max-w-1032px mx-auto justify-center items-center">
       {content}
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
     </div>
   );
   return view;

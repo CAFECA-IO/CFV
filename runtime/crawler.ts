@@ -100,10 +100,19 @@ const closeMissions = async () => {
   }
 };
 
+const ensureMissionFolder = async (folder: string) => {
+  try {
+    if(fs.existsSync(folder)) return;
+    await fs.promises.mkdir(folder);
+  } catch (e) {
+  }
+}
+
 const doJob = async (job) => {
   const data = JSON.parse(job.data);
   const id = data["NO"];
   const mFolder = missionFolder(job.mission_id);
+  await ensureMissionFolder(mFolder);
   const filePath = join(mFolder, `${job.sheet}-${job.row}-${id}.png`);
   const encodeAddress1 = encodeURIComponent(data["起點"] as string);
   const encodeAddress2 = encodeURIComponent(data["終點"] as string);

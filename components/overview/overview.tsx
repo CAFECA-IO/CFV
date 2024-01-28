@@ -7,6 +7,7 @@ import { IMission } from "../../interfaces/mission";
 import { FiSearch } from "react-icons/fi";
 import { FaArrowAltCircleDown } from "react-icons/fa";
 import { BiRightArrowAlt, BiSolidPlusCircle } from "react-icons/bi";
+import { toast } from "react-toastify";
 
 const Overview = () => {
   const today = Math.floor(
@@ -80,16 +81,24 @@ const Overview = () => {
     await fetch(`/api/mission`, {
       method: "POST",
       body: new FormData(document.forms["uploadForm"]),
-    }).then((res) => {
+    }).then(async (res) => {
       if (res.ok) {
         // Info: (20231030 - Julian) Show loading skeleton
         setIsLoading(true);
         // Info: (20231027 - Julian) Get mission list
         getMissions();
+        // Info: (20240128 - Luphia) Check if success
+        const rs = await res.json();
+        if (rs.success) {
+          toast.success("Analysis Started");
+        } else {
+          toast.error("insufficient Quota");
+        }
+
         // Info: (20231027 - Julian) Clear input
         event.target.value = "";
       } else {
-        alert("Upload failed. Please try again.");
+        toast.error("Upload failed. Please try again.");
       }
     });
   };
