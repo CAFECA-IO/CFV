@@ -122,6 +122,9 @@ const doJob = async (job) => {
     `https://www.google.com/maps/dir/${encodeAddress1}/${encodeAddress2}/`
   );
 
+  await page.waitForSelector("div.widget-directions > div > div:nth-child(2) > div > div > div > div:nth-child(2) > button");
+  await page.click("div.widget-directions > div > div:nth-child(2) > div > div > div > div:nth-child(2) > button");
+  await sleep(3000)
   const n = await page.$("#section-directions-trip-0");
   const t = await n?.getProperty("textContent");
   const j = (await t?.jsonValue()) || "";
@@ -168,7 +171,7 @@ const doJobs = async (counts: Number = 10) => {
 
   for (let job of jobs) {
     await doJob(job);
-    await sleep(5000);
+    await sleep(1000);
   }
   closeMissions();
   isBusy = false;
