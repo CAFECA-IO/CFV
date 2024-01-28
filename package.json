@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@prisma/client": "^5.5.2",
+    "@vercel/og": "^0.6.2",
     "dotenv": "^16.3.2",
     "next": "latest",
     "react": "18.2.0",
