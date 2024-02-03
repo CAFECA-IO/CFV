@@ -108,24 +108,24 @@ const createMission = async (name: string, file: Buffer): Promise<string> => {
   const sheetList = workbook.SheetNames;
 
   // count jobs in sheetList
-  let jobCount = 0;
+  let counts = 0;
   for (let sheetName of sheetList) {
     const sheet = workbook.Sheets[sheetName];
     const json = XLSX.utils.sheet_to_json(sheet);
 
     for (let row of json) {
-      jobCount++;
+      counts++;
     }
   }
 
   // charge user
-  if (quota < jobCount) return "";
+  if (quota < counts) return "";
   await prisma.users.update({
     where: {
       id: user_id,
     },
     data: {
-      quota: quota - jobCount,
+      quota: quota - counts,
     },
   });
 
@@ -134,6 +134,7 @@ const createMission = async (name: string, file: Buffer): Promise<string> => {
     data: {
       name,
       user_id,
+      counts,
     },
   });
   const pid = mission.id;

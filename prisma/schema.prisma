@@ -25,6 +25,7 @@ model Missions {
   name String
   description String?
   user_id String?
+  counts Int @default(0)
   done Boolean @default(false)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
