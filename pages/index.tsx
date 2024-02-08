@@ -12,6 +12,19 @@ const dummyUser = {
   avatar: "/avatar_147144.png",
 };
 
+// footer view, sticky to the bottom, height 100px
+const footer = (
+  <div className="fixed flex bottom-0 justify-center items-center w-full h-100px bg-white text-gray">
+    <p className="text-xs">
+      © 2021 MerMer Ltd. All rights reserved.
+    </p>
+    <p className="text-xs ml-2">
+      <a href="/term_of_service">服務條款</a> | <a href="privacy_policy">隱私權條款</a> | <a href="mailto:contact@mermer.com.tw">聯絡我們</a>
+    </p>
+  </div>
+);
+
+
 const Main = () => {
   const { data: session, status } = useSession();
   const content = session ? (
@@ -19,22 +32,27 @@ const Main = () => {
   ) : (
     <LoginView />
   );
+
   const view = (
-    <div className="p-10px font-roboto flex min-h-screen max-w-1032px mx-auto justify-center items-center">
-      {content}
-      <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-      />
-    </div>
+    <>
+      <div className="p-10px font-roboto flex min-h-screen max-w-1032px mx-auto justify-center items-center">
+        {content}
+        <ToastContainer
+          position="top-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
+        
+      </div>
+      {footer}
+    </>
   );
   return view;
 };
@@ -42,12 +60,11 @@ const Main = () => {
 const LoginView = () => {
   const view = (
     <div className="flex flex-col justify-center items-end bg-cover bg-login h-720px w-full bg-white rounded">
-      <div className="text-2xl font-bold w-1/2 p-20 space-y-12">
-        <h1 className="text-black text-42px">Sign in</h1>
+      <div className="text-2xl font-bold w-700px p-20 space-y-12">
+        <h1 className="text-black text-42px"></h1>
         <button onClick={() => signIn("google")} className="flex items-center gap-4 shadow-xl rounded-lg pl-3">
           <Image src="/google_login.png" width={300} height={30} alt="google_logo" />
         </button>
-        <div className="h-px bg-coolGray w-full"></div>
         <div className="flex items-center space-x-1">
           <PiPlantFill color="red" />
           <PiPlantFill color="orange" />
