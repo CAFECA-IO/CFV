@@ -131,7 +131,16 @@ const doJob = async (job) => {
   const d =
     (j.match(/([0-9]*[.])?[0-9]+ [km|公里]/)?.at(0) as unknown as string) ||
     "?? km";
-  const distance = (d.split(" ")?.at(0) || "??");
+  const distanceSource = d.split(" ");
+  const unit = distanceSource[1];
+  let distance;
+  if (unit === "km" || unit === "公里") {
+    distance = parseFloat(distanceSource[0]);
+  } else if (unit === "m" || unit === "公尺") {
+    distance = parseFloat(distanceSource[0]) / 1000;
+  } else {
+    distance = '??';
+  }
 
   // wait for the selector appear on the page
   await page.screenshot({
