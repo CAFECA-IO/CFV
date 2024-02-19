@@ -129,15 +129,15 @@ const doJob = async (job) => {
   const t = await n?.getProperty("textContent");
   const j = (await t?.jsonValue()) || "";
   const d =
-    (j.match(/([0-9]*[.])?[0-9]+ [km|公里]/)?.at(0) as unknown as string) ||
+    (j.match(/(\d+(\.\d+)?)\s*(公里|km|m|公尺)/)?.at(0) as unknown as string) ||
     "?? km";
   const distanceSource = d.split(" ");
   const unit = distanceSource[1];
   let distance;
   if (unit === "km" || unit === "公里") {
-    distance = parseFloat(distanceSource[0]);
+    distance = distanceSource[0];
   } else if (unit === "m" || unit === "公尺") {
-    distance = parseFloat(distanceSource[0]) / 1000;
+    distance = (parseFloat(distanceSource[0]) / 1000).toString();
   } else {
     distance = '??';
   }
