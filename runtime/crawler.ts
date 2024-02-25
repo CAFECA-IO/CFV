@@ -129,7 +129,7 @@ const doJob = async (job) => {
   const t = await n?.getProperty("textContent");
   const j = (await t?.jsonValue()) || "";
   const d =
-    (j.match(/(\d+(\.\d+)?)\s*(km|m|mile|ft|公里|公尺|英里|英尺)/)?.at(0) as unknown as string) ||
+    (j.match(/(\d{1,3}(,\d{3})*(\.\d+)?)\s*(km|m|mile|ft|公里|公尺|英里|英尺)/)?.at(0) as unknown as string) ||
     "?? km";
   const distanceSource = d.split(" ");
   const unit = distanceSource[1];
