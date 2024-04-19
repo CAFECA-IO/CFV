@@ -9,12 +9,12 @@ export async function GET(request: NextRequest, response: NextResponse) {
   // print current path
   const imageURL = `https://cfv.cafeca.io/isunfa.png`;
   const url = new URL(request.url);
-  const name = url.searchParams.get("name") as string;
+  const name = url.searchParams.get("name") as string || "anonymous";
   const ip = request.headers.get("x-forwarded-for") as string;
 
   // div background image = imageURL
   const jsx = (
-    <img width="400" height="135"src={imageURL} />
+    <img width="400" height="100"src={imageURL} />
   );
   
   const visitor = { ip, name };
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest, response: NextResponse) {
   return new ImageResponse(
     jsx, {
       width: 400,
-      height: 135,
+      height: 100,
     }
   );
 }
