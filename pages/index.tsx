@@ -2,10 +2,9 @@ import Image from "next/image";
 import Overview from "../components/overview/overview";
 import { useState, Dispatch, SetStateAction } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { GoogleLogin } from "@react-oauth/google";
-import { PiHouseBold } from "react-icons/pi";
-import { LuUsers } from "react-icons/lu";
 import { PiPlantFill } from "react-icons/pi";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const dummyUser = {
   name: "Jane Doe",
@@ -13,17 +12,47 @@ const dummyUser = {
   avatar: "/avatar_147144.png",
 };
 
+// footer view, sticky to the bottom, height 100px
+const footer = (
+  <div className="fixed flex bottom-0 justify-center items-center w-full h-100px bg-white text-gray">
+    <p className="text-xs">
+      © 2021 MerMer Ltd. All rights reserved.
+    </p>
+    <p className="text-xs ml-2">
+      <a href="/term_of_service">服務條款</a> | <a href="privacy_policy">隱私權條款</a> | <a href="mailto:contact@mermer.com.tw">聯絡我們</a>
+    </p>
+  </div>
+);
+
+
 const Main = () => {
   const { data: session, status } = useSession();
-  const content = !session ? (
+  const content = session ? (
     <OperationView session={session} />
   ) : (
     <LoginView />
   );
+
   const view = (
-    <div className="p-10px font-roboto flex min-h-screen max-w-1032px mx-auto justify-center items-center">
-      {content}
-    </div>
+    <>
+      <div className="p-10px font-roboto flex min-h-screen max-w-1032px mx-auto justify-center items-center">
+        {content}
+        <ToastContainer
+          position="top-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
+        
+      </div>
+      {footer}
+    </>
   );
   return view;
 };
@@ -31,17 +60,11 @@ const Main = () => {
 const LoginView = () => {
   const view = (
     <div className="flex flex-col justify-center items-end bg-cover bg-login h-720px w-full bg-white rounded">
-      <div className="text-2xl font-bold w-1/2 p-20 space-y-12">
-        <h1 className="text-black text-42px">Sign in</h1>
-        <GoogleLogin
-          onSuccess={(credentialResponse) => {
-            console.log(credentialResponse);
-          }}
-          onError={() => {
-            console.log("Login Failed");
-          }}
-        />
-        <div className="h-px bg-coolGray w-full"></div>
+      <div className="text-2xl font-bold w-700px p-20 space-y-12">
+        <h1 className="text-black text-42px"></h1>
+        <button onClick={() => signIn("google")} className="flex items-center gap-4 shadow-xl rounded-lg pl-3">
+          <Image src="/google_login.png" width={300} height={30} alt="google_logo" />
+        </button>
         <div className="flex items-center space-x-1">
           <PiPlantFill color="red" />
           <PiPlantFill color="orange" />
@@ -64,7 +87,7 @@ const OperationView = (session) => {
 
   const view = (
     <div className="relative flex items-start justify-start w-full h-720px rounded bg-white">
-      <MenuView menu={menu} setMenu={setMenu} />
+      <MenuView session={session} menu={menu} setMenu={setMenu} />
       <JobBoard menu={menu} />
     </div>
   );
@@ -72,9 +95,11 @@ const OperationView = (session) => {
   return view;
 };
 const MenuView = ({
+  session,
   menu,
   setMenu,
 }: {
+  session: any;
   menu: "overview" | "collaborators";
   setMenu: Dispatch<SetStateAction<"overview" | "collaborators">>;
 }) => {
@@ -97,8 +122,9 @@ const MenuView = ({
         </div>
         {/* Info: (20231024 - Julian) User Name & Email */}
         <div className="flex flex-col">
-          <h2 className="text-sm text-black">{dummyUser.name}</h2>
-          <p className="text-gray text-xs">{dummyUser.email}</p>
+          <h2 className="text-sm text-black">{session.session.user.name}</h2>
+          <p className="text-gray text-xs">{session.session.user.email}</p>
+          <p className="text-gray text-xs">quota: {session.session.user.quota}</p>
         </div>
       </div>
       {/* Info: (20231024 - Julian) Menu Items */}
@@ -110,10 +136,9 @@ const MenuView = ({
             menu === "overview"
               ? "text-white border-primaryGreen bg-primaryGreen"
               : "text-black2 border-gray2 bg-white"
-          } items-center space-x-2 p-3`}
+          } items-center space-x-2 p-3 rounded-full`}
         >
-          <PiHouseBold size={24} />
-          <p>Overview</p>
+          <p>$ Charge</p>
         </button>
         {/* Info: (20231024 - Julian) Collaborators 
         <button
@@ -127,6 +152,11 @@ const MenuView = ({
           <LuUsers size={24} />
           <p>Collaborators</p>
         </button> */}
+        <button onClick={() => signOut()}
+          className="flex w-full font-bold border text-base text-white border-primaryGreen bg-primaryGreen items-center space-x-2 mt-2 p-3 rounded-full"
+        >
+          <p>Sign out</p>
+        </button>
       </div>
     </div>
   );

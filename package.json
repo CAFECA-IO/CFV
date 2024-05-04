@@ -9,10 +9,13 @@
   },
   "dependencies": {
     "@prisma/client": "^5.5.2",
+    "@vercel/og": "^0.6.2",
+    "dotenv": "^16.3.2",
     "next": "latest",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.11.0",
+    "react-toastify": "^10.0.4",
     "react-usestateref": "^1.0.8"
   },
   "engines": {
@@ -30,7 +33,7 @@
     "eslint-config-next": "13.2.4",
     "formidable": "^3.5.1",
     "next": "13.5.6",
-    "next-auth": "^4.24.3",
+    "next-auth": "^4.24.5",
     "postcss": "^8.4.31",
     "prisma": "^5.5.2",
     "puppeteer": "^21.4.0",

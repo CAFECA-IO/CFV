@@ -7,6 +7,7 @@ import { IMission } from "../../interfaces/mission";
 import { FiSearch } from "react-icons/fi";
 import { FaArrowAltCircleDown } from "react-icons/fa";
 import { BiRightArrowAlt, BiSolidPlusCircle } from "react-icons/bi";
+import { toast } from "react-toastify";
 
 const Overview = () => {
   const today = Math.floor(
@@ -80,16 +81,24 @@ const Overview = () => {
     await fetch(`/api/mission`, {
       method: "POST",
       body: new FormData(document.forms["uploadForm"]),
-    }).then((res) => {
+    }).then(async (res) => {
       if (res.ok) {
         // Info: (20231030 - Julian) Show loading skeleton
         setIsLoading(true);
         // Info: (20231027 - Julian) Get mission list
         getMissions();
+        // Info: (20240128 - Luphia) Check if success
+        const rs = await res.json();
+        if (rs.success) {
+          toast.success("Analysis Started");
+        } else {
+          toast.error("insufficient Quota");
+        }
+
         // Info: (20231027 - Julian) Clear input
         event.target.value = "";
       } else {
-        alert("Upload failed. Please try again.");
+        toast.error("Upload failed. Please try again.");
       }
     });
   };
@@ -119,7 +128,7 @@ const Overview = () => {
       avatar: mission.user.image,
     },
     fileName: mission.name,
-    uploadTimestamp: Math.floor(new Date(mission.createdAt).getTime() / 1000),
+    uploadTimestamp: Math.floor(new Date(mission.created_at).getTime() / 1000),
     progress: mission.progress,
     status: mission.done ? "done" : "processing",
   }));
@@ -223,7 +232,7 @@ const Overview = () => {
         {/* Info: (20231024 - Julian) Search Bar */}
         <div className="flex items-center relative flex-1">
           <input
-            className="w-300px h-48px py-3 pl-12 pr-4 w-full placeholder:text-gray rounded border border-gray2 shadow-lg"
+            className="w-300px bg-white h-48px py-3 pl-12 pr-4 w-full placeholder:text-gray rounded border border-gray2 shadow-lg"
             type="search"
             placeholder="Search"
             onChange={searchChangeHandler}
@@ -347,7 +356,7 @@ const Overview = () => {
           <div className="w-180px px-3 whitespace-nowrap">Author</div>
 
           {/* Info: (20231025 - Julian) File Name */}
-          <div className="w-100px whitespace-nowrap lg:block hidden">
+          <div className="w-200px whitespace-nowrap lg:block hidden">
             File Name
           </div>
 
