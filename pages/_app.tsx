@@ -5,8 +5,7 @@ import type { AppProps } from "next/app";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const App = ({ Component, pageProps: { session, ...pageProps } }: AppProps) => {
-  const googleId = process.env.GOOGLE_ID || "";
-  const googleSecret = process.env.GOOGLE_SECRET || "";
+  const googleId = process.env.GOOGLE_ID as string;
 
   return (
     <>

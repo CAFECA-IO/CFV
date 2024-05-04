@@ -3,18 +3,28 @@ import DatePicker from "../../components/date_picker/date_picker";
 import JobItem from "../../components/job_item/job_item";
 import Pagination from "../../components/pagination/pagination";
 import { BsArrowDownShort, BsArrowUpShort } from "react-icons/bs";
-import { ITEMS_PER_PAGE } from "../../constants/config";
 import { IMission } from "../../interfaces/mission";
 import { FiSearch } from "react-icons/fi";
+import { FaArrowAltCircleDown } from "react-icons/fa";
 import { BiRightArrowAlt, BiSolidPlusCircle } from "react-icons/bi";
+import { toast } from "react-toastify";
 
 const Overview = () => {
-  const endDate = Math.floor(new Date().getTime() / 1000 + 86399);
+  const today = Math.floor(
+    new Date(
+      `${new Date().getFullYear()}-${
+        new Date().getMonth() + 1
+      }-${new Date().getDate()} 00:00:00`
+    ).getTime() / 1000
+  );
+  const endDate = today + 86399;
   const startDate = endDate - 86400 * 30;
 
   // Info: (20231027 - Julian) Mission State
   const [missions, setMissions] = useState<IMission>();
-  //const [isloading, setIsLoading] = useState(false);
+  // Info: (20231030 - Julian) is show loading skeleton
+  const [isLoading, setIsLoading] = useState(true);
+  // Info: (20231027 - Julian) is fetch API
   const [allJobDone, setAllJobDone] = useState(false);
   // Info: (20231024 - Julian) Filter State
   const [searchText, setSearchText] = useState("");
@@ -32,15 +42,9 @@ const Overview = () => {
   const [sortByNewest, setSortByNewest] = useState(true);
   // Info: (20231025 - Julian) Pagination
   const [activePage, setActivePage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  // Info: (20231025 - Julian) Select All
-  const [selectAll, setSelectAll] = useState(false);
-
-  const endIdx = activePage * ITEMS_PER_PAGE;
-  const startIdx = endIdx - ITEMS_PER_PAGE;
+  const [totalPages, setTotalPages] = useState(missions?.totalPage ?? 1);
 
   const uploadDateSortHandler = () => setSortByNewest(!sortByNewest);
-  const selectAllHandler = () => setSelectAll(!selectAll);
 
   const searchChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = event.target.value;
@@ -60,10 +64,10 @@ const Overview = () => {
 
   const dateEndUpdateHandler = useCallback(
     async (date: number) => {
-      setDateEnd(date);
+      setDateEnd(date + 86399);
       setFilteredDate({
         startTimeStamp: dateStart,
-        endTimeStamp: date,
+        endTimeStamp: date + 86399,
       });
     },
     [dateStart, filteredDate]
@@ -77,26 +81,35 @@ const Overview = () => {
     await fetch(`/api/mission`, {
       method: "POST",
       body: new FormData(document.forms["uploadForm"]),
-    }).then((res) => {
+    }).then(async (res) => {
       if (res.ok) {
-        // ToDo: (20231027 - Julian) Add loading animation
-
+        // Info: (20231030 - Julian) Show loading skeleton
+        setIsLoading(true);
         // Info: (20231027 - Julian) Get mission list
         getMissions();
+        // Info: (20240128 - Luphia) Check if success
+        const rs = await res.json();
+        if (rs.success) {
+          toast.success("Analysis Started");
+        } else {
+          toast.error("insufficient Quota");
+        }
+
         // Info: (20231027 - Julian) Clear input
         event.target.value = "";
       } else {
-        alert("Upload failed. Please try again.");
+        toast.error("Upload failed. Please try again.");
       }
     });
   };
 
   // Info: (20231027 - Julian) Get mission list
   const getMissions = async () => {
-    const response = await fetch("/api/mission", {
+    const response = await fetch(`/api/mission?page=${activePage}`, {
       method: "GET",
     });
     const missions: IMission = await response.json();
+    if (response.ok) setIsLoading(false);
     // Info: (20231025 - Julian) Check if all job done
     if (missions.missions.every((mission) => mission.done)) {
       setAllJobDone(true);
@@ -115,7 +128,7 @@ const Overview = () => {
       avatar: mission.user.image,
     },
     fileName: mission.name,
-    uploadTimestamp: Math.floor(new Date(mission.createdAt).getTime() / 1000),
+    uploadTimestamp: Math.floor(new Date(mission.created_at).getTime() / 1000),
     progress: mission.progress,
     status: mission.done ? "done" : "processing",
   }));
@@ -147,10 +160,11 @@ const Overview = () => {
         )
     : [];
 
-  useEffect(() => {
-    setActivePage(1);
-    setTotalPages(Math.ceil(filteredJobList.length / ITEMS_PER_PAGE));
-  }, [currentTab, searchText, filteredDate, sortByNewest]);
+  // Info: (20231030 - Julian) Filter
+  // useEffect(() => {
+  //   setActivePage(1);
+  //   setTotalPages(Math.ceil(filteredJobList.length / ITEMS_PER_PAGE));
+  // }, [currentTab, searchText, filteredDate, sortByNewest]);
 
   useEffect(() => {
     // Info: (20231025 - Julian) If not all job done, check every 5 seconds
@@ -162,21 +176,11 @@ const Overview = () => {
     }
   }, [allJobDone]);
 
-  const displayedJobList = filteredJobList
-    .map((job, index) => (
-      <JobItem
-        missionId={job.id}
-        key={index}
-        author={job.author}
-        fileName={job.fileName}
-        uploadTimestamp={job.uploadTimestamp}
-        progress={job.progress}
-        status={job.status}
-      />
-    )) // Info: (20231025 - Julian) Pagination
-    .slice(startIdx, endIdx);
+  useEffect(() => {
+    getMissions();
+  }, [activePage]);
 
-  const jobListSkeleton = (
+  const jobListSkeleton = isLoading ? (
     <div className="animate-pulse w-full flex items-center border-x border-b border-coolGray p-2 h-50px">
       <div className="flex items-center space-x-4 w-200px">
         <div className="ml-6 rounded-full w-40px h-40px bg-coolGray"></div>
@@ -193,6 +197,30 @@ const Overview = () => {
         <div className="w-20px h-20px bg-coolGray rounded-full"></div>
       </div>
     </div>
+  ) : null;
+
+  const displayedJobList = filteredJobList.map((job, index) => (
+    <JobItem
+      missionId={job.id}
+      key={index}
+      author={job.author}
+      fileName={job.fileName}
+      uploadTimestamp={job.uploadTimestamp}
+      progress={job.progress}
+      status={job.status}
+      allJobDone={allJobDone}
+      setAllJobDone={setAllJobDone}
+    />
+  ));
+
+  const displayedMissions = (
+    <>
+      {jobListSkeleton}
+      {isLoading
+        ? displayedJobList // Info: (20231030 - Julian) 為了放入 loading skeleton ， job list 需要切掉最後一個
+            .slice(0, -1)
+        : displayedJobList}
+    </>
   );
 
   const overview = (
@@ -204,7 +232,7 @@ const Overview = () => {
         {/* Info: (20231024 - Julian) Search Bar */}
         <div className="flex items-center relative flex-1">
           <input
-            className="w-300px h-48px py-3 pl-12 pr-4 w-full placeholder:text-gray rounded border border-gray2 shadow-lg"
+            className="w-300px bg-white h-48px py-3 pl-12 pr-4 w-full placeholder:text-gray rounded border border-gray2 shadow-lg"
             type="search"
             placeholder="Search"
             onChange={searchChangeHandler}
@@ -232,37 +260,71 @@ const Overview = () => {
         <div className="flex items-center border-b border-coolGray space-x-4">
           <button
             onClick={() => setCurrentTab("all")}
-            className={`border-b py-2 px-3 transition-all duration-200 ease-in-out ${
+            className={`border-b flex items-center py-2 px-3 space-x-1 ${
               currentTab === "all"
                 ? "border-primaryGreen text-primaryGreen"
                 : "border-transparent"
-            }`}
+            } transition-all duration-200 ease-in-out`}
           >
-            <p>All</p>
+            <p className="text-base">All</p>
+            <p
+              className={`rounded-full text-white px-6px py-2px text-xs ${
+                currentTab === "all" ? "bg-primaryGreen" : "bg-black"
+              }`}
+            >
+              {missions?.missions.length ?? 0}
+            </p>
           </button>
           <button
             onClick={() => setCurrentTab("processing")}
-            className={`border-b py-2 px-3 transition-all duration-200 ease-in-out ${
+            className={`border-b flex items-center py-2 px-3 space-x-1 ${
               currentTab === "processing"
                 ? "border-primaryGreen text-primaryGreen"
                 : "border-transparent"
-            }`}
+            } transition-all duration-200 ease-in-out`}
           >
-            <p>Processing</p>
+            <p className="text-base">Processing</p>
+            <p
+              className={`rounded-full text-white px-6px py-2px text-xs ${
+                currentTab === "processing" ? "bg-primaryGreen" : "bg-black"
+              }`}
+            >
+              {missions?.missions.filter((mission) => !mission.done).length ??
+                0}
+            </p>
           </button>
           <button
             onClick={() => setCurrentTab("done")}
-            className={`border-b py-2 px-3 transition-all duration-200 ease-in-out ${
+            className={`border-b flex items-center py-2 px-3 space-x-1 ${
               currentTab === "done"
                 ? "border-primaryGreen text-primaryGreen"
                 : "border-transparent"
-            }`}
+            } transition-all duration-200 ease-in-out`}
           >
-            <p>Done</p>
+            <p className="text-base">Done</p>
+            <p
+              className={`rounded-full text-white px-6px py-2px text-xs ${
+                currentTab === "done" ? "bg-primaryGreen" : "bg-black"
+              }`}
+            >
+              {missions?.missions.filter((mission) => mission.done).length ?? 0}
+            </p>
           </button>
         </div>
         {/* Info: (20231024 - Julian) Buttons */}
         <div className="flex items-center space-x-4">
+          {/* Info: (20231030 - Julian) Template Download Button */}
+          <a
+            href="/template.xlsx"
+            download="template.xlsx"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center space-x-2 text-sm text-white bg-primaryGreen rounded-full px-2 py-1"
+          >
+            <FaArrowAltCircleDown color="white" size={20} />
+            <p>Template</p>
+          </a>
+          {/* Info: (20231030 - Julian) Upload Button */}
           <form id="uploadForm" target="hidden-form">
             <label className="hover:cursor-pointer">
               <BiSolidPlusCircle color="#57BE6C" size={40} />
@@ -286,15 +348,15 @@ const Overview = () => {
             <input
               type="checkbox"
               className="accent-white"
-              checked={selectAll}
-              onChange={selectAllHandler}
+              //checked={selectAll}
+              //onChange={selectAllHandler}
             />
           </div>
           {/* Info: (20231025 - Julian) Author */}
           <div className="w-180px px-3 whitespace-nowrap">Author</div>
 
           {/* Info: (20231025 - Julian) File Name */}
-          <div className="w-100px whitespace-nowrap lg:block hidden">
+          <div className="w-200px whitespace-nowrap lg:block hidden">
             File Name
           </div>
 
@@ -312,8 +374,7 @@ const Overview = () => {
           {/* Info: (20231025 - Julian) Job Status */}
           <div className="flex-1">Status</div>
         </div>
-
-        {displayedJobList}
+        {displayedMissions}
       </div>
       {/* Info: (20231025 - Julian) Pagination */}
       <div className="w-full flex justify-center my-6">
