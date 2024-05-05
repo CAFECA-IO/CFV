@@ -23,5 +23,10 @@ export async function GET(req: NextRequest, context: { params }) {
   const contentType = 'application/pdf';
   const response = new NextResponse(pdfBuffer);
   response.headers.set("content-type", contentType);
+  response.headers.set('Access-Control-Allow-Credentials', "false")
+  response.headers.set('Access-Control-Allow-Origin', '*') 
+  response.headers.set('Access-Control-Allow-Methods', 'GET,DELETE,PATCH,POST,PUT')
+  response.headers.set('Access-Control-Allow-Headers', 'Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date')
+
   return response;
 }
