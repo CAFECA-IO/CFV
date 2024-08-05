@@ -90,11 +90,12 @@ const closeMissions = async () => {
     const jobs = await prisma.jobs.findMany({
       where: {
         mission_id: mission.id,
-        done: false,
       },
     });
+    const doneJobs = jobs.filter((job) => job.done);
+    const undoneJobs = jobs.filter((job) => !job.done);
 
-    if (jobs.length === 0) {
+    if (undoneJobs.length === 0 && doneJobs.length > 0) {
       await closeMission(mission);
     }
   }
@@ -186,12 +187,13 @@ const doJobs = async (counts: Number = 10) => {
     await doJob(job);
     await sleep(1000);
   }
-  closeMissions();
+  
   isBusy = false;
 };
 
 const start = async () => {
   await doJobs();
+  await closeMissions();
   setTimeout(start, 10000);
 };
 
