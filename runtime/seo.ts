@@ -69,8 +69,8 @@ const getTitle = async (url: string) => {
 const scan = async () => {
   // get site map from https://mermer.com.tw/sitemap.xml
   browser = await puppeteerExtra.launch({
-    args: ['--no-sandbox',],
-    headless: false,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    headless: true,
   });
   const page = await browser.pages().then(pages => pages[0] || browser.newPage());
   await page.goto('https://mermer.com.tw/sitemap.xml');
