@@ -11,6 +11,7 @@ const shuffle = (array: string[]) => array.sort(() => Math.random() - 0.5);
 
 const searchTitle = async (title: string) => {
   const page = await browser.pages().then(pages => pages[0] || browser.newPage());
+  await page.setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36");
   const basicUrl = 'https://google.com/';
   await page.goto(basicUrl);
   const searchQuery = `${title} mermer`;
@@ -42,6 +43,7 @@ const searchTitle = async (title: string) => {
   // await page.goto(searchUrl);
 
   // find the link https://mermer.com.tw/* and click it
+  await page.screenshot({ path: 'debug_headless.png', fullPage: true });
   await page.waitForSelector("a[href*='mermer.com.tw']");
   await page.click("a[href*='mermer.com.tw']");
 
