@@ -103,8 +103,8 @@ const closeMissions = async () => {
 
 const ensureMissionFolder = async (folder: string) => {
   try {
-    if(fs.existsSync(folder)) return;
-    await fs.promises.mkdir(folder);
+    if (fs.existsSync(folder)) return;
+    await fs.promises.mkdir(folder, { recursive: true });
   } catch (e) {
   }
 }
@@ -123,8 +123,7 @@ const doJob = async (job) => {
     `https://www.google.com/maps/dir/${encodeAddress1}/${encodeAddress2}/`
   );
 
-  await page.waitForSelector("div.widget-directions > div > div:nth-child(2) > div > div > div > div:nth-child(2) > button");
-  await page.click("div.widget-directions > div > div:nth-child(2) > div > div > div > div:nth-child(2) > button");
+  await page.waitForSelector("#section-directions-trip-0");
   await sleep(3000)
   const n = await page.$("#section-directions-trip-0");
   const t = await n?.getProperty("textContent");
@@ -187,7 +186,7 @@ const doJobs = async (counts: Number = 10) => {
     await doJob(job);
     await sleep(1000);
   }
-  
+
   isBusy = false;
 };
 
