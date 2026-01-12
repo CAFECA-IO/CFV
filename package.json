@@ -7,7 +7,7 @@
     "dev": "next dev",
     "start": "next start -p 80",
     "crawler": "ts-node -O '{\"module\":\"commonjs\"}' runtime/crawler.ts",
-    "seo": "ts-node -O '{\"module\":\"commonjs\"}' runtime/mermer_seo.ts"
+    "seo": "ts-node -O '{\"module\":\"commonjs\"}' runtime/seo.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
