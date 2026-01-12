@@ -23,8 +23,8 @@ if [ "$LOCAL" != "$REMOTE" ]; then
   pm2 delete Crawler
   pm2 delete SEOBot
   pm2 start npm --name CFV -- start
-  pm2 start npx --name Crawler -- ts-node ./runtime/crawler.ts
-  pm2 start npx --name SEOBot -- ts-node ./runtime/seo.ts
+  pm2 start npm --name Crawler -- run crawler
+  pm2 start npm --name SEOBot -- run seo
 else
   echo "No new commits."
 fi
