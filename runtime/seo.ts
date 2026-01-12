@@ -47,7 +47,7 @@ const scan = async () => {
   const fullLinks = rawlinks.filter((link) => link.includes('knowledge-management/20'));
   const links = shuffle(fullLinks.filter((link) => Math.random() > 0.5));
   page.close();
-  
+
   // get the link title and run searchTitle for each title
   for (let link of links) {
     const title = await getTitle(link);
@@ -62,3 +62,4 @@ const scan = async () => {
 }
 
 scan();
+export { };

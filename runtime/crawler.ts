@@ -198,3 +198,4 @@ const start = async () => {
 
 start();
 prisma.$disconnect();
+export { };
