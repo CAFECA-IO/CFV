@@ -123,26 +123,30 @@ const doJob = async (job) => {
     `https://www.google.com/maps/dir/${encodeAddress1}/${encodeAddress2}/`
   );
 
-  await page.waitForSelector("#section-directions-trip-0");
-  await sleep(3000)
-  const n = await page.$("#section-directions-trip-0");
-  const t = await n?.getProperty("textContent");
-  const j = (await t?.jsonValue()) || "";
-  const d =
-    (j.match(/(\d{1,3}(,\d{3})*(\.\d+)?)\s*(km|m|mile|ft|公里|公尺|英里|英尺)/)?.at(0) as unknown as string) ||
-    "?? km";
-  const distanceSource = d.split(" ");
-  const unit = distanceSource[1];
   let distance;
-  if (unit === "km" || unit === "公里") {
-    distance = distanceSource[0];
-  } else if (unit === "m" || unit === "公尺") {
-    distance = (parseFloat(distanceSource[0]) / 1000).toString();
-  } else if (unit === "mile" || unit === "英里") {
-    distance = (parseFloat(distanceSource[0]) * 1.60934).toString();
-  } else if (unit === "ft" || unit === "英尺") {
-    distance = (parseFloat(distanceSource[0]) * 0.0003048).toString();
-  } else {
+  try {
+    await page.waitForSelector("#section-directions-trip-0");
+    await sleep(3000)
+    const n = await page.$("#section-directions-trip-0");
+    const t = await n?.getProperty("textContent");
+    const j = (await t?.jsonValue()) || "";
+    const d =
+      (j.match(/(\d{1,3}(,\d{3})*(\.\d+)?)\s*(km|m|mile|ft|公里|公尺|英里|英尺)/)?.at(0) as unknown as string) ||
+      "?? km";
+    const distanceSource = d.split(" ");
+    const unit = distanceSource[1];
+    if (unit === "km" || unit === "公里") {
+      distance = distanceSource[0];
+    } else if (unit === "m" || unit === "公尺") {
+      distance = (parseFloat(distanceSource[0]) / 1000).toString();
+    } else if (unit === "mile" || unit === "英里") {
+      distance = (parseFloat(distanceSource[0]) * 1.60934).toString();
+    } else if (unit === "ft" || unit === "英尺") {
+      distance = (parseFloat(distanceSource[0]) * 0.0003048).toString();
+    } else {
+      distance = '??';
+    }
+  } catch (e) {
     distance = '??';
   }
 
