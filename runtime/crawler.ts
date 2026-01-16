@@ -110,6 +110,7 @@ const ensureMissionFolder = async (folder: string) => {
 }
 
 const doJob = async (job) => {
+  const startTime = Date.now();
   const data = JSON.parse(job.data);
   const id = data["NO"];
   const mFolder = missionFolder(job.mission_id);
@@ -119,12 +120,12 @@ const doJob = async (job) => {
   const encodeAddress2 = encodeURIComponent(data["終點"] as string);
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  await page.goto(
-    `https://www.google.com/maps/dir/${encodeAddress1}/${encodeAddress2}/`
-  );
-
   let distance;
+  console.log(`from ${data["起點"]} to ${data["終點"]}`);
   try {
+    await page.goto(
+      `https://www.google.com/maps/dir/${encodeAddress1}/${encodeAddress2}/`
+    );
     await page.waitForSelector("#section-directions-trip-0");
     await sleep(3000)
     const n = await page.$("#section-directions-trip-0");
@@ -168,6 +169,8 @@ const doJob = async (job) => {
       done: true,
     },
   });
+  console.log(`doJob time: ${Date.now() - startTime}ms`);
+  console.log(`done ${job.id}`);
 };
 
 const doJobs = async (counts: Number = 10) => {
